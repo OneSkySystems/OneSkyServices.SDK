@@ -10,7 +10,7 @@ This project provides a C# SDK for interacting with the services.
 
 To use this SDK with OneSky's Analytical Services, follow these steps.
 
-1. First contact OneSky <https://onesky.xyz/contact,> to obtain an API key.
+1. First contact OneSky <https://onesky.xyz/contact>, to obtain an API key.
 
   Once you have the API key, continue on to the next step.
 
