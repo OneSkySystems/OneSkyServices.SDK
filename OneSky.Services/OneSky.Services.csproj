@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.1.1</Version>
+    <releaseNotes>Bug fixes</releaseNotes>
+    <license>GPL-3.0-only</license>
+    <Authors>Ted Driver</Authors>
+    <Company>Analytical Graphics Inc.</Company>
+    <Product>OneSky.Services .NET SDK</Product>
+    <Description>A software development kit that allows .NET usage of the AGI analytical services</Description>
+    <Copyright>2019 - AGI</Copyright>
+    <RepositoryUrl>https://github.com/tdriver/OneSky.Services</RepositoryUrl>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageTags>STK; STK Components; Analytical Services; .NET; SDK; Analysis</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="OneSky.Services.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <!-- <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DocumentationFile>bin\OneSky.Services.XML</DocumentationFile>
+  </PropertyGroup> -->
+
+</Project>
