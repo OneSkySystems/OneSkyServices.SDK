@@ -6,7 +6,7 @@ namespace OneSky.Services.Outputs.Access
     /// <summary>
     /// 
     /// </summary>
-    /// <typeparam name="T">Type of position data returned.null  
+    /// <typeparam name="T">Type of position data returned.
     /// Usually ServiceCartographicWithTime or ServiceCartesianWithTime</typeparam>
     public class OverflightAccessResult<T>
         where T: IPathResult

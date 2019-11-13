@@ -21,37 +21,32 @@ namespace OneSky.Services.Services.Access
 
             accessData.Verify();
 
-            if (accessData.FromObjectPath is PointToPointRouteData)
+            switch (accessData.FromObjectPath)
             {
-                relativeUri = ServiceUris.AccessSatellitePassesPointToPointUri;
-            }
-            else if (accessData.FromObjectPath is SiteData)
-            {
-                relativeUri = ServiceUris.AccessSatellitePassesSiteUri;
-            }
-            else if (accessData.FromObjectPath is Sgp4RouteData)
-            {
-                relativeUri = ServiceUris.AccessSatellitePassesSgp4Uri;
-            }
-            else if (accessData.FromObjectPath is SimpleFlightRouteData)
-            {
-                relativeUri = ServiceUris.AccessSatellitePassesSimpleFlightUri;
-            }
-            else if (accessData.FromObjectPath is TolRouteData)
-            {
-                relativeUri = ServiceUris.AccessSatellitePassesTolUri;
-            }
-            else if (accessData.FromObjectPath is RasterRouteData)
-            {
-                relativeUri = ServiceUris.AccessSatellitePassesRasterUri;
-            }
-            else if (accessData.FromObjectPath is GreatArcRouteData)
-            {
-                relativeUri = ServiceUris.AccessSatellitePassesGreatArcUri;
-            }
-            else if (accessData.FromObjectPath is CatalogRouteData)
-            {
-                relativeUri = ServiceUris.AccessSatellitePassesCatalogObjectUri;
+                case PointToPointRouteData _:
+                    relativeUri = ServiceUris.AccessSatellitePassesPointToPointUri;
+                    break;
+                case SiteData _:
+                    relativeUri = ServiceUris.AccessSatellitePassesSiteUri;
+                    break;
+                case Sgp4RouteData _:
+                    relativeUri = ServiceUris.AccessSatellitePassesSgp4Uri;
+                    break;
+                case SimpleFlightRouteData _:
+                    relativeUri = ServiceUris.AccessSatellitePassesSimpleFlightUri;
+                    break;
+                case TolRouteData _:
+                    relativeUri = ServiceUris.AccessSatellitePassesTolUri;
+                    break;
+                case RasterRouteData _:
+                    relativeUri = ServiceUris.AccessSatellitePassesRasterUri;
+                    break;
+                case GreatArcRouteData _:
+                    relativeUri = ServiceUris.AccessSatellitePassesGreatArcUri;
+                    break;
+                case CatalogRouteData _:
+                    relativeUri = ServiceUris.AccessSatellitePassesCatalogObjectUri;
+                    break;
             }
 
             if (string.IsNullOrEmpty(relativeUri))

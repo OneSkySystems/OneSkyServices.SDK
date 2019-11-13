@@ -7,6 +7,7 @@ using OneSky.Services.Inputs.Access;
 using OneSky.Services.Outputs.Access;
 using OneSky.Services.Util;
 
+
 namespace OneSky.Services.Services.Overflight
 {
     /// <summary>
@@ -15,36 +16,38 @@ namespace OneSky.Services.Services.Overflight
     /// </summary>
     public class OverflightServices
     {
-        public static async Task<OverflightAccessResult<IPathResult>> GetRegionalOverflight(
-                                                                    OverflightAccessData<IVerifiable> overflightData){
-            string relativeUri = string.Empty;
+        public static async Task<List<OverflightAccessResult<T>>> GetRegionalOverflight<T>(
+                                                                    OverflightAccessData<IVerifiable> overflightData) where T:IPathResult{
+            var relativeUri = string.Empty;
             
             overflightData.Verify();
-            
-            if((Type)overflightData.Path == typeof(PointToPointRouteData)){
-                relativeUri = ServiceUris.OverflightPointToPointUri;
+
+            switch (overflightData.Path)
+            {
+                case PointToPointRouteData _:
+                    relativeUri = ServiceUris.OverflightPointToPointUri;
+                    break;
+                case Sgp4RouteData _:
+                    relativeUri = ServiceUris.OverflightSgp4Uri;
+                    break;
+                case SimpleFlightRouteData _:
+                    relativeUri = ServiceUris.OverflightSimpleFlightUri;
+                    break;
+                case GreatArcRouteData _:
+                    relativeUri = ServiceUris.OverflightGreatArcUri;
+                    break;
+                case CatalogRouteData _:
+                    relativeUri = ServiceUris.OverflightCatalogObjectUri;
+                    break;
             }
-            else if((Type)overflightData.Path== typeof(Sgp4RouteData)){
-                relativeUri = ServiceUris.OverflightSgp4Uri;
-            }
-            else if((Type)overflightData.Path == typeof(SimpleFlightRouteData)){
-                relativeUri = ServiceUris.OverflightSimpleFlightUri;
-            }
-            else if((Type)overflightData.Path == typeof(GreatArcRouteData)){
-                relativeUri = ServiceUris.OverflightGreatArcUri;
-            }
-            else if((Type)overflightData.Path == typeof(CatalogRouteData)){
-                relativeUri = ServiceUris.OverflightCatalogObjectUri;
-            }
-            
+
             if(string.IsNullOrEmpty(relativeUri)){
-                throw new ArgumentOutOfRangeException("overflightData",(Type)overflightData.Path, 
-                            (Type)overflightData.Path  + " is not a valid type for Overflight Access");
+                throw new ArgumentOutOfRangeException(nameof(overflightData),overflightData.Path, 
+                            overflightData.Path  + " is not a valid type for Overflight Access");
             }
             
             var uri = Networking.GetFullUri(relativeUri);
-            return await Networking.HttpPostCall<OverflightAccessData<IVerifiable>,
-                                                            OverflightAccessResult<IPathResult>>(uri, overflightData);
+            return await Networking.HttpPostCall<OverflightAccessData<IVerifiable>, List<OverflightAccessResult<T>>>(uri, overflightData);
         }        
     }
 

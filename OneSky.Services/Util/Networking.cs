@@ -24,7 +24,6 @@ namespace OneSky.Services.Util
             Init();
         }
 
-        /// A method that posts <T> Json data to a Uri and returns <R> result or throws with http error code.
         /// <summary>
         /// Posts data of type T to a web service defined by address.  The web service returns data defined by R.
         /// </summary>
@@ -89,7 +88,7 @@ namespace OneSky.Services.Util
 
             var efm = new ExeConfigurationFileMap { ExeConfigFilename = "OneSky.Services.config" };
             var configuration = ConfigurationManager.OpenMappedExeConfiguration(efm, ConfigurationUserLevel.None);
-            AppSettingsSection asc = (AppSettingsSection)configuration.GetSection("appSettings");
+            var asc = (AppSettingsSection)configuration.GetSection("appSettings");
             if (asc.Settings.Count == 0)
             {
                 throw new ConfigurationErrorsException("The configuration file is missing or empty.");
@@ -104,14 +103,12 @@ namespace OneSky.Services.Util
             {
                 throw new ConfigurationErrorsException("The BaseUrl is not defined in the configuration file.");
             }
-            BaseUri = new Uri(url);   
+            BaseUri = new Uri(url);
 
-            if (_client == null)
-            {
-                _client = new HttpClient();
-                _client.DefaultRequestHeaders.Accept.Clear();
-                _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            }         
+            if (_client != null) return;
+            _client = new HttpClient();
+            _client.DefaultRequestHeaders.Accept.Clear();
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         public static Uri GetFullUri(string relativeUri) => new Uri(BaseUri, relativeUri + "?u=" + ApiKey);
@@ -119,11 +116,11 @@ namespace OneSky.Services.Util
         public static Uri AppendDateToUri(Uri existingUri, DateTime? date){
             if(date.HasValue){
                 UriBuilder urib = new UriBuilder(existingUri);
-                var dateQuery = $"&date={date.Value.Date.ToString("yyyy-MM-dd")}";
+                var dateQuery = $"&date={date.Value.Date:yyyy-MM-dd}";
                 urib.Query = urib.Query.Substring(1) + dateQuery;
                 return urib.Uri;
             }            
-            throw new ArgumentNullException("date","The date must be supplied");
+            throw new ArgumentNullException(nameof(date),"The date must be supplied");
         }
         public static Uri AppendDateTimeAndPrnToUri(Uri existingUri,
                                                     DateTime? fromDate,
@@ -131,8 +128,8 @@ namespace OneSky.Services.Util
                                                     int? prn){
             UriBuilder urib = new UriBuilder(existingUri);
             if(fromDate.HasValue && toDate.HasValue){
-                var fromQuery = $"&from={fromDate.Value.ToString("yyyy-MM-ddTHH:mm:ss")}";
-                var toQuery = $"&to={toDate.Value.ToString("yyyy-MM-ddTHH:mm:ss")}";
+                var fromQuery = $"&from={fromDate.Value:yyyy-MM-ddTHH:mm:ss}";
+                var toQuery = $"&to={toDate.Value:yyyy-MM-ddTHH:mm:ss}";
                 urib.Query = urib.Query.Substring(1) + fromQuery + toQuery;
             }
             if(prn.HasValue){
