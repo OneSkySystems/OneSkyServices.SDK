@@ -12,20 +12,22 @@ namespace OneSky.Services.Tests.Basic.Core
     [TestFixture]
     public class ConfigurationTest
     {
-        private const string STORED_CONFIG = "OneSky.Services.config.orig";
+        private const string ConfigFilename = "OneSky.Services.config";
+        private const string StoredConfigFilename = ConfigFilename + ".orig";
+        private const int DelayTimeForFileOperation = 1500;
 
         [SetUp]
         public void StoreConfig()
         {
 
-            if (File.Exists(STORED_CONFIG))
+            if (File.Exists(StoredConfigFilename))
             {
-                File.Delete(STORED_CONFIG);
+                File.Delete(StoredConfigFilename);
             }
 
-            if (File.Exists("OneSky.Services.config"))
+            if (File.Exists(ConfigFilename))
             {
-                File.Move("OneSky.Services.config", STORED_CONFIG);
+                File.Move(ConfigFilename, StoredConfigFilename);
             }
         }
 
@@ -33,15 +35,17 @@ namespace OneSky.Services.Tests.Basic.Core
         [TearDown]
         public void RestoreConfig()
         {
-            if (File.Exists("OneSky.Services.config"))
+            if (File.Exists(ConfigFilename))
             {
-                File.Delete("OneSky.Services.config");
+                File.Delete(ConfigFilename);
             }
 
-            if (File.Exists("OneSky.Services.config.orig"))
+            if (File.Exists(StoredConfigFilename))
             {
-                File.Move("OneSky.Services.config.orig", "OneSky.Services.config");
+                File.Move(StoredConfigFilename, ConfigFilename);
             }
+
+            Thread.Sleep(DelayTimeForFileOperation);
 
             Networking.Init();
         }
@@ -49,18 +53,11 @@ namespace OneSky.Services.Tests.Basic.Core
         [Test] 
         public void TestConfigurationFileNotPresent()
         {
-            if(File.Exists("OneSky.Services.config.test")){
-                File.Delete("OneSky.Services.config.test");
-            }       
-            if(File.Exists("OneSky.Services.config")){
-                File.Move("OneSky.Services.config","OneSky.Services.config.test");
+            if(File.Exists(ConfigFilename)){
+                File.Delete(ConfigFilename);
             }
+
             Assert.Throws<ConfigurationErrorsException>(() => Networking.Init());
-            
-            if(File.Exists("OneSky.Services.config.test")){
-                File.Move("OneSky.Services.config.test","OneSky.Services.config");
-            }
-            Thread.Sleep(1500);
         }
 
         [Test]        
@@ -74,22 +71,8 @@ namespace OneSky.Services.Tests.Basic.Core
             configFile.AppendLine("</appSettings>");
             configFile.AppendLine("</configuration>");
 
-            if(File.Exists("OneSky.Services.config.test")){
-                File.Delete("OneSky.Services.config.test");
-            }       
-
-            if(File.Exists("OneSky.Services.config")){
-                File.Move("OneSky.Services.config","OneSky.Services.config.test");
-            }
-            File.WriteAllText("OneSky.Services.config", configFile.ToString());
+            File.WriteAllText(ConfigFilename, configFile.ToString());
             Assert.Throws<ConfigurationErrorsException>(()=>Networking.Init());
-
-            if (File.Exists("OneSky.Services.config.test") &&
-               File.Exists("OneSky.Services.config")){
-                File.Delete("OneSky.Services.config");
-                File.Move("OneSky.Services.config.test","OneSky.Services.config");
-            }      
-            Thread.Sleep(1500);
         }
 
         [Test]        
@@ -103,21 +86,8 @@ namespace OneSky.Services.Tests.Basic.Core
             configFile.AppendLine("</appSettings>");
             configFile.AppendLine("</configuration>");
 
-            if(File.Exists("OneSky.Services.config.test")){
-                File.Delete("OneSky.Services.config.test");
-            }       
-            if(File.Exists("OneSky.Services.config")){
-                File.Move("OneSky.Services.config","OneSky.Services.config.test");                
-            }
-            File.WriteAllText("OneSky.Services.config", configFile.ToString());
+            File.WriteAllText(ConfigFilename, configFile.ToString());
             Assert.Throws<ConfigurationErrorsException>(()=>Networking.Init());
-
-            if (File.Exists("OneSky.Services.config.test") &&
-               File.Exists("OneSky.Services.config")){
-                File.Delete("OneSky.Services.config");
-                File.Move("OneSky.Services.config.test","OneSky.Services.config");
-            }
-            Thread.Sleep(1500);
         }
 
          [Test]        
@@ -128,21 +98,8 @@ namespace OneSky.Services.Tests.Basic.Core
             configFile.AppendLine("<configuration>");
             configFile.AppendLine("</configuration>");
 
-            if(File.Exists("OneSky.Services.config.test")){
-                File.Delete("OneSky.Services.config.test");
-            }       
-            if(File.Exists("OneSky.Services.config")){
-                File.Move("OneSky.Services.config","OneSky.Services.config.test");
-            }
-            File.WriteAllText("OneSky.Services.config", configFile.ToString());
+            File.WriteAllText(ConfigFilename, configFile.ToString());
             Assert.Throws<ConfigurationErrorsException>(()=>Networking.Init());
-
-            if (File.Exists("OneSky.Services.config.test") &&
-               File.Exists("OneSky.Services.config")){
-                File.Delete("OneSky.Services.config");
-                File.Move("OneSky.Services.config.test","OneSky.Services.config");
-            }
-            Thread.Sleep(1500);
         }
     }
 }
