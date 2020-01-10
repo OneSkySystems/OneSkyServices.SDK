@@ -93,12 +93,12 @@ namespace OneSky.Services.Util
             {
                 throw new ConfigurationErrorsException("The configuration file is missing or empty.");
             }
-            ApiKey = asc.Settings["ApiKey"].Value;
+            ApiKey = asc.Settings["ApiKey"]?.Value;
             if (string.IsNullOrEmpty(ApiKey))
             {
                 throw new ConfigurationErrorsException("The ApiKey is not defined in the configuration file.");
             }
-            var url = asc.Settings["BaseUrl"].Value;
+            var url = asc.Settings["BaseUrl"]?.Value;
             if (string.IsNullOrEmpty(url))
             {
                 throw new ConfigurationErrorsException("The BaseUrl is not defined in the configuration file.");
