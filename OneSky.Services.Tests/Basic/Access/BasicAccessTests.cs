@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using FluentAssertions;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Access;
@@ -26,11 +28,16 @@ namespace OneSky.Services.Tests.Basic.Access
             passRequest.FromObjectDark = true;
             passRequest.IncludePathCzml = true;
             passRequest.Verify();
+            var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatelliteAccessPassData);
 
             // call the service
             var passResults = AccessServices.GetSatellitePasses<SatellitePassResults<ServiceCartographicWithTime>>
                                                                                                 (passRequest).Result;
-            Assert.That(passResults.Passes.Count > 0);
+            Assert.That(passResults.Passes.Count == 18);
+
+            // object graph verification of actual results with expected results
+            passResults.Passes.Should().BeEquivalentTo(expected.Passes);
+
             Assert.That(!string.IsNullOrEmpty(passResults.CzmlForPasses));
             // Head to cesiumjs.org, click the "Tap to Interact" button. Once the globe appears, Drag the file produced 
             // in the next line to the globe.  Use the globe controls to move forward and backward in time, and move the 

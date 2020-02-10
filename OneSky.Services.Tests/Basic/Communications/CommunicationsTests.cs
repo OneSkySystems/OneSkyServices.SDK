@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using FluentAssertions;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Communications;
 using OneSky.Services.Inputs.Routing;
+using OneSky.Services.Outputs.Communications;
 using OneSky.Services.Services.Communications;
 
 namespace OneSky.Services.Tests.Basic.Communications
@@ -79,15 +82,15 @@ namespace OneSky.Services.Tests.Basic.Communications
             request.UseTirem = true;
             request.TiremSettings.SurfaceHumidity = 10.0;
             request.TiremSettings.SurfaceRefractivity = 200.0;
+            var expected = JsonConvert.DeserializeObject<CommunicationsResults>(TestHelper.CommunicationsLinkBudgetsGreatArc);
 
             // dump the request to see the JSON created
             //File.WriteAllText(@".\CommRequest.json",request.ToString());
 
             var commResult = CommunicationServices.GetLinkBudget(request).Result;
-            Assert.That(commResult != null);
-            Assert.That(commResult.LinkBudgets != null);
-            Assert.That(commResult.LinkBudgets.Count == 5);
-            Assert.AreEqual(0.499, commResult.LinkBudgets[0].BitErrorRate, 1e-3);
+
+            // object graph verification of actual results with expected results
+            commResult.Should().BeEquivalentTo(expected);
         }
     }
 }
