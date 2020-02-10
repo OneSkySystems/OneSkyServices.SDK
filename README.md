@@ -21,7 +21,7 @@ To use this SDK with OneSky's Analytical Services, follow these steps.
 <configuration>
 <appSettings>
     <add key="ApiKey" value="OneSky provided API Key" />
-    <add key="BaseUrl" value="https://saas.agi.com" />
+    <add key="BaseUrl" value="https://saas.onesky.xyz" />
 </appSettings>
 </configuration>
 ```
