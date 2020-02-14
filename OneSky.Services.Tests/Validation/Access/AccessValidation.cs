@@ -39,14 +39,16 @@ namespace OneSky.Services.Tests.Validation.Access
             passRequest.LineOfSight = true;
             passRequest.IncludePathCzml = true;
             passRequest.Verify();
-            var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatelliteAccessGeoToLeo);
 
             // call the service
-            var passResults = AccessServices.GetSatellitePasses<SatellitePassResults<ServiceCartographicWithTime>>
-                                                                                                (passRequest).Result;
-            Assert.That(passResults.Passes.Count == 13);
+            var rawResponse = AccessServices.GetSatellitePasses<string>(passRequest).Result;
+            var passResults = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(rawResponse, new JsonSerializerSettings
+            {
+                MissingMemberHandling = MissingMemberHandling.Error
+            });
 
             // object graph verification of actual results with expected results
+            var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatelliteAccessGeoToLeo);
             passResults.Passes.Should().BeEquivalentTo(expected.Passes);
         }
 

@@ -45,16 +45,19 @@ namespace OneSky.Services.Tests.Validation.Access
             passRequest.SatelliteOrbitColor = Color.Magenta.ToString();
             passRequest.PassLinkColor = Color.Green.ToString();
             passRequest.Verify();
-            var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatellitePasses_IssAccessToSite);
 
             // call the service
-            var passResults = AccessServices.GetSatellitePasses<SatellitePassResults<ServiceCartographicWithTime>>
-                                                                                                (passRequest).Result;
-            Assert.That(passResults.Passes.Count == 2);
+            var rawResponse = AccessServices.GetSatellitePasses<string>(passRequest).Result;
+            var passResults = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(rawResponse, new JsonSerializerSettings
+            {
+                MissingMemberHandling = MissingMemberHandling.Error
+            });
 
             // object graph verification of actual results with expected results
+            var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatellitePasses_IssAccessToSite);
             passResults.Passes.Should().BeEquivalentTo(expected.Passes);
         }
+
         //TODO complete this test when Sensor is implemented
         [Test, Explicit]
         public void SensorFor_Noaa16ToIss()
