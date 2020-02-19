@@ -54,7 +54,7 @@ namespace OneSky.Services.Tests.Validation.Access
             });
 
             // object graph verification of actual results with expected results
-            var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatellitePasses_IssAccessToSite);
+            var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatellitePassesIssAccessToSite);
             passResults.Passes.Should().BeEquivalentTo(expected.Passes);
         }
 
