@@ -55,7 +55,17 @@ namespace OneSky.Services.Tests.Validation.Access
 
             // object graph verification of actual results with expected results
             var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatellitePassesIssAccessToSite);
-            passResults.Passes.Should().BeEquivalentTo(expected.Passes);
+            passResults.Passes.Should().BeEquivalentTo(expected.Passes, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+                .When(info =>
+                    info.SelectedMemberPath == "AccessStart" ||
+                    info.SelectedMemberPath == "AccessStop" ||
+                    info.SelectedMemberPath == "AccessBeginData.Time" ||
+                    info.SelectedMemberPath == "AccessEndData.Time" ||
+                    info.SelectedMemberPath == "MaximumElevationData.Time")
+            );
         }
 
         //TODO complete this test when Sensor is implemented

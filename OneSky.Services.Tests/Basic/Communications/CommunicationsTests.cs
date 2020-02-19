@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FluentAssertions;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.DataCollection;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using OneSky.Services.Inputs;
@@ -100,9 +101,15 @@ namespace OneSky.Services.Tests.Basic.Communications
 
             // object graph verification of actual results with expected results
             var expected = JsonConvert.DeserializeObject<CommunicationsResults>(TestHelper.CommunicationsLinkBudgetsGreatArc);
-            commResult.Should().BeEquivalentTo(expected);
+            commResult.Should().BeEquivalentTo(expected, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TestHelper.PrecisionDateTimeMs))
+                .WhenTypeIs<DateTime>()
+            );
         }
 
+        // TODO: Need to investigate why the first element returns with -Infinity and Nan from Analytical Service
         [Test]
         public void TestLinkBudgetsSimpleFlight()
         {
@@ -200,7 +207,12 @@ namespace OneSky.Services.Tests.Basic.Communications
 
             // object graph verification of actual results with expected results
             var expected = JsonConvert.DeserializeObject<CommunicationsResults>(TestHelper.CommunicationsLinkBudgetsSimpleFlight);
-            commResult.Should().BeEquivalentTo(expected);
+            commResult.Should().BeEquivalentTo(expected, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, TestHelper.PrecisionDateTimeMs))
+                .WhenTypeIs<DateTime>()
+            );
         }
     }
 }

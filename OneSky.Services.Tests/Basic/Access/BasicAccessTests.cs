@@ -39,8 +39,18 @@ namespace OneSky.Services.Tests.Basic.Access
 
             // object graph verification of actual results with expected results
             var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatelliteAccessPassData);
-            passResults.Passes.Should().BeEquivalentTo(expected.Passes);
-
+            passResults.Passes.Should().BeEquivalentTo(expected.Passes, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+                .When(info => 
+                    info.SelectedMemberPath == "AccessStart" ||
+                    info.SelectedMemberPath == "AccessStop" ||
+                    info.SelectedMemberPath == "AccessBeginData.Time" ||
+                    info.SelectedMemberPath == "AccessEndData.Time" ||
+                    info.SelectedMemberPath == "MaximumElevationData.Time")
+            );
+            
             Assert.That(!string.IsNullOrEmpty(passResults.CzmlForPasses));
             // Head to cesiumjs.org, click the "Tap to Interact" button. Once the globe appears, Drag the file produced 
             // in the next line to the globe.  Use the globe controls to move forward and backward in time, and move the 
