@@ -45,11 +45,22 @@ namespace OneSky.Services.Util
             
             R result;
 
-            try{
-                result = JsonConvert.DeserializeObject<R>(jsonResponse);
-            }catch{
-                throw new ArgumentOutOfRangeException($"Unable to convert web response to type: {typeof(R)}");
+            if (typeof(R) != typeof(string))
+            {
+                try
+                {
+                    result = JsonConvert.DeserializeObject<R>(jsonResponse);
+                }
+                catch
+                {
+                    throw new ArgumentOutOfRangeException($"Unable to convert web response to type: {typeof(R)}");
+                }
             }
+            else
+            {
+                result = (R)Convert.ChangeType(jsonResponse, typeof(R));
+            }
+
             return result;
         }
 

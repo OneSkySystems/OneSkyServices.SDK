@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using FluentAssertions;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Access;
@@ -45,20 +47,27 @@ namespace OneSky.Services.Tests.Validation.Access
             passRequest.Verify();
 
             // call the service
-            var passResults = AccessServices.GetSatellitePasses<SatellitePassResults<ServiceCartographicWithTime>>
-                                                                                                (passRequest).Result;
-            Assert.That(passResults.Passes.Count == 2);
-            // First Pass
-            Assert.AreEqual(-2.893973737835,passResults.Passes[0].MaxMagnitude,1e-12);
-            Assert.AreEqual(15.61516492386,passResults.Passes[0].MaximumElevationData.Elevation,1e-11);
-            Assert.AreEqual("2014-08-19T00:22:13.1728536Z",passResults.Passes[0].AccessStart);
-            Assert.AreEqual("2014-08-19T00:26:28.4117640Z",passResults.Passes[0].AccessStop);
-            // Second Pass
-            Assert.AreEqual(-4.341255364434,passResults.Passes[1].MaxMagnitude,1e-12);
-            Assert.AreEqual(55.23840734827,passResults.Passes[1].MaximumElevationData.Elevation,1e-11);
-            Assert.AreEqual("2014-08-19T01:58:17.8074201Z",passResults.Passes[1].AccessStart);
-            Assert.AreEqual("2014-08-19T02:01:13.4157620Z",passResults.Passes[1].AccessStop);
+            var rawResponse = AccessServices.GetSatellitePasses<string>(passRequest).Result;
+            var passResults = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(rawResponse, new JsonSerializerSettings
+            {
+                MissingMemberHandling = MissingMemberHandling.Error
+            });
+
+            // object graph verification of actual results with expected results
+            var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatellitePassesIssAccessToSite);
+            passResults.Passes.Should().BeEquivalentTo(expected.Passes, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+                .When(info =>
+                    info.SelectedMemberPath == "AccessStart" ||
+                    info.SelectedMemberPath == "AccessStop" ||
+                    info.SelectedMemberPath == "AccessBeginData.Time" ||
+                    info.SelectedMemberPath == "AccessEndData.Time" ||
+                    info.SelectedMemberPath == "MaximumElevationData.Time")
+            );
         }
+
         //TODO complete this test when Sensor is implemented
         [Test, Explicit]
         public void SensorFor_Noaa16ToIss()

@@ -1,4 +1,6 @@
 using System;
+using FluentAssertions;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Access;
@@ -39,19 +41,25 @@ namespace OneSky.Services.Tests.Validation.Access
             passRequest.Verify();
 
             // call the service
-            var passResults = AccessServices.GetSatellitePasses<SatellitePassResults<ServiceCartographicWithTime>>
-                                                                                                (passRequest).Result;
-            Assert.That(passResults.Passes.Count == 13);
-            // First Pass
-            Assert.AreEqual(7.285152814472,passResults.Passes[0].MaxMagnitude,1e-12);
-            Assert.AreEqual(-80.727902792933861,passResults.Passes[0].MaximumElevationData.Elevation,1e-15);
-            Assert.AreEqual("2014-08-19T00:10:47.7098365Z",passResults.Passes[0].AccessStart);
-            Assert.AreEqual("2014-08-19T00:28:20.1973285Z",passResults.Passes[0].AccessStop);
-            // Second Pass
-            Assert.AreEqual(4.137398061182,passResults.Passes[12].MaxMagnitude,1e-12);
-            Assert.AreEqual(-80.7507306151,passResults.Passes[12].MaximumElevationData.Elevation,1e-10);
-            Assert.AreEqual("2014-08-19T11:54:24.1844298Z",passResults.Passes[12].AccessStart);
-            Assert.AreEqual("2014-08-19T12:00:00.0000000Z",passResults.Passes[12].AccessStop);
+            var rawResponse = AccessServices.GetSatellitePasses<string>(passRequest).Result;
+            var passResults = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(rawResponse, new JsonSerializerSettings
+            {
+                MissingMemberHandling = MissingMemberHandling.Error
+            });
+
+            // object graph verification of actual results with expected results
+            var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatelliteAccessGeoToLeo);
+            passResults.Passes.Should().BeEquivalentTo(expected.Passes, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+                .When(info =>
+                    info.SelectedMemberPath == "AccessStart" ||
+                    info.SelectedMemberPath == "AccessStop" ||
+                    info.SelectedMemberPath == "AccessBeginData.Time" ||
+                    info.SelectedMemberPath == "AccessEndData.Time" ||
+                    info.SelectedMemberPath == "MaximumElevationData.Time")
+            );
         }
 
     }

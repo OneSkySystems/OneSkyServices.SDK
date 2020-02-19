@@ -14,13 +14,13 @@ namespace OneSky.Services.Services.Communications
     /// </summary>
     public class CommunicationServices
     {
-        public static async Task<CommunicationsResults> GetLinkBudget(CommunicationData commData){
+        public static async Task<R> GetLinkBudget<R>(CommunicationData commData){
             string relativeUri = ServiceUris.CommunicationsLinkBudgetUri;
             
             commData.Verify();                        
                       
             var uri = Networking.GetFullUri(relativeUri);
-            return await Networking.HttpPostCall<CommunicationData, CommunicationsResults>(uri, commData);
+            return await Networking.HttpPostCall<CommunicationData, R>(uri, commData);
         }        
     }
 }
