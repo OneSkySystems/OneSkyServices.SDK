@@ -43,7 +43,7 @@ namespace OneSky.Services.Tests.Validation.Lighting
             Assert.IsTrue(lighting.Lighting[0].IsSetDefined);
 
             var secondSunset = new DateTimeOffset(2018, 4, 10,
-                19, 35, 29, 938, new TimeSpan(-4, 0, 0));
+                19, 35, 29, 937, new TimeSpan(-4, 0, 0));
             Assert.AreEqual(secondSunset.ToUnixTimeMilliseconds(),
                 lighting.Lighting[1].Sunset.ToUnixTimeMilliseconds());
 
@@ -121,16 +121,17 @@ namespace OneSky.Services.Tests.Validation.Lighting
                 17, 0, 0, new TimeSpan(0, 0, 0));
             var lastTime = new DateTimeOffset(2018, 4, 9,
                 23, 0, 0, new TimeSpan(0, 0, 0));
-            
+
+            var tol = 1e-6;
             Assert.AreEqual(firstTime,angles[0].Time);
-            Assert.AreEqual(firstAzimuth,angles[0].Azimuth);
-            Assert.AreEqual(firstElevation,angles[0].Elevation);
+            Assert.AreEqual(firstAzimuth,angles[0].Azimuth, tol);
+            Assert.AreEqual(firstElevation,angles[0].Elevation, tol);
             Assert.AreEqual(midTime,angles[3].Time);
-            Assert.AreEqual(midAzimuth,angles[3].Azimuth);
-            Assert.AreEqual(midElevation,angles[3].Elevation);
+            Assert.AreEqual(midAzimuth,angles[3].Azimuth, tol);
+            Assert.AreEqual(midElevation,angles[3].Elevation, tol);
             Assert.AreEqual(lastTime,angles[6].Time);
-            Assert.AreEqual(lastAzimuth,angles[6].Azimuth);
-            Assert.AreEqual(lastElevation,angles[6].Elevation);
+            Assert.AreEqual(lastAzimuth,angles[6].Azimuth, tol);
+            Assert.AreEqual(lastElevation,angles[6].Elevation, tol);
         }
 
         [Test]
