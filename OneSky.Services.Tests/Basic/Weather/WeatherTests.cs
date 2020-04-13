@@ -46,13 +46,15 @@ namespace OneSky.Services.Tests.Basic.Weather
                 Longitude = -104.607925
             };
             route.Waypoints[1].Time = DateTimeOffset.Now.AddDays(-2).AddHours(2.5);
-            route.OutputSettings.Step = 900;       
+            route.OutputSettings.Step = 900;
+            route.IncludeWaypointsInRoute = false;
             
             request.Path = route;
             
             var weather = WeatherServices.GetWeatherAlongARoute(request).Result;
             Assert.That(weather != null);
-            Assert.That(weather.Count == 7);
+            // should be 6 Wx reports,  one for each half hour along the route.
+            Assert.That(weather.Count == 6);
         }
 
         [Test]
