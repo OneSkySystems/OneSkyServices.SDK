@@ -36,9 +36,6 @@ namespace OneSky.Services.Services.Overflight
                 case GreatArcRouteData _:
                     relativeUri = ServiceUris.OverflightGreatArcUri;
                     break;
-                case CatalogRouteData _:
-                    relativeUri = ServiceUris.OverflightCatalogObjectUri;
-                    break;
             }
 
             if(string.IsNullOrEmpty(relativeUri)){

@@ -47,9 +47,6 @@ namespace OneSky.Services.Services.Routing
             else if(typeof(T) == typeof(SimpleFlightRouteData)){
                 relativeUri = ServiceUris.SimpleFlightRouteUri;
             }
-            else if(typeof(T) == typeof(CatalogRouteData)){
-                relativeUri = ServiceUris.CatalogObjectRouteUri;
-            }
             if(string.IsNullOrEmpty(relativeUri)){
                 throw new ArgumentOutOfRangeException("routeData",typeof(T), 
                             typeof(T) + " is not a valid type for route generation");
