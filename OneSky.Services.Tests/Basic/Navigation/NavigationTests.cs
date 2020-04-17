@@ -1,8 +1,11 @@
 ﻿using System;
+using FluentAssertions;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Navigation;
 using OneSky.Services.Inputs.Routing;
+using OneSky.Services.Outputs.Navigation;
 using OneSky.Services.Services.Navigation;
 
 namespace OneSky.Services.Tests.Basic.Navigation
@@ -71,8 +74,10 @@ namespace OneSky.Services.Tests.Basic.Navigation
         public void TestPredictedErrorsOnSimpleFlightRoute()
         {
             var input = new NavigationPredictionData<IVerifiable> ();
-            var path = new SimpleFlightRouteData();
-            path.Start = new DateTimeOffset(2014,5,3,0,0,0,0,new TimeSpan(0));
+            var path = new SimpleFlightRouteData
+            {
+                Start = new DateTimeOffset(2014, 5, 3, 0, 0, 0, 0, new TimeSpan(0))
+            };
             path.Waypoints.Add(new ServiceCartographic2D(39.0,-104.77));
             path.Waypoints.Add(new ServiceCartographic2D(30.0,-98.0));
             path.Waypoints.Add(new ServiceCartographic2D(40.0,-77.0));
@@ -81,8 +86,9 @@ namespace OneSky.Services.Tests.Basic.Navigation
             path.Altitude = 9144.0;
             path.MeanSeaLevel = true;
             input.Path = path;
+            var expectedResult = JsonConvert.DeserializeObject<RouteNavigationErrorResults>(TestHelper.NavigationBasicPrediction);
             var result = NavigationServices.GetPredictedNavigationErrorsOnARoute(input).Result;
-            Assert.That(result.Errors.Length > 0);
+            result.Should().BeEquivalentTo(expectedResult);
         }
     }
 }

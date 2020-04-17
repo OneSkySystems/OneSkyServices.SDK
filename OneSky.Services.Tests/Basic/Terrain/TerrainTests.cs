@@ -1,8 +1,12 @@
-﻿using System;
+﻿using FluentAssertions;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Routing;
+using OneSky.Services.Outputs.Terrain;
 using OneSky.Services.Services.Terrain;
+using System;
+using System.Collections.Generic;
 
 namespace OneSky.Services.Tests.Basic.Terrain
 {
@@ -32,10 +36,8 @@ namespace OneSky.Services.Tests.Basic.Terrain
             request.OutputSettings.Step = 20;      
 
             var result = TerrainServices.GetTerrainHeightsAlongARoute<PointToPointRouteData>(request).Result;
-
-            Assert.That(result != null);
-            Assert.That(result.Count == 181);
-            Assert.AreEqual(2091.64136f,result[0].TerrainHeightFromMeanSeaLevel);
+            var expectedResult = JsonConvert.DeserializeObject<List<TerrainHeightAtLocationResponse>>(TestHelper.TerrainBasicP2P);
+            result.Should().BeEquivalentTo(expectedResult);
         }
 
         [Test]
@@ -62,23 +64,16 @@ namespace OneSky.Services.Tests.Basic.Terrain
             request.OutputSettings.CoordinateFormat.Coord = CoordinateRepresentation.XYZ;
 
             var result = TerrainServices.GetTerrainHeightsAlongARoute<GreatArcRouteData>(request).Result;
-
-            Assert.That(result != null);
-            Assert.That(result.Count == 10);
-            Assert.AreEqual(2286.85181f,result[0].TerrainHeightFromMeanSeaLevel);
-            Assert.AreEqual(-16.9748859f,result[0].MeanSeaLevelHeightFromWgs84);
-            Assert.AreEqual(2269.87671f,result[0].TerrainHeightFromWgs84);
+            var expectedResult = JsonConvert.DeserializeObject<List<TerrainHeightAtLocationResponse>>(TestHelper.TerrainBasicGA);
+            result.Should().BeEquivalentTo(expectedResult);
         }
 
          [Test]
         public void TestTerrainAtASite()
         {
             var result = TerrainServices.GetTerrainHeightsAtASite(39.0,-104.77).Result;
-
-            Assert.That(result != null);
-            Assert.AreEqual(2091.6413192307896,result.TerrainHeightFromMeanSeaLevel);
-            Assert.AreEqual(-17.063999999999989,result.MeanSeaLevelHeightFromWgs84);
-            Assert.AreEqual(2074.5773192307897,result.TerrainHeightFromWgs84);
+            var expectedResult = JsonConvert.DeserializeObject<Heights>(TestHelper.TerrainBasicSite);
+            result.Should().BeEquivalentTo(expectedResult);
         }
     }
 }
