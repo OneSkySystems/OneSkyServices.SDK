@@ -67,51 +67,5 @@ namespace OneSky.Services.Tests.Validation.Access
                     info.SelectedMemberPath == "MaximumElevationData.Time")
             );
         }
-
-        //TODO complete this test when Sensor is implemented
-        [Test, Explicit]
-        public void SensorFor_Noaa16ToIss()
-        {
-            var sensorForRequest = new SensorForAccessData<IVerifiable>()
-            {
-                Start = new DateTime(2014, 2, 20, 0, 0, 0, DateTimeKind.Utc),
-                Stop = new DateTime(2014, 2, 21, 0, 0, 0, DateTimeKind.Utc)
-            };
-            var toObjectPath = new Sgp4RouteData()
-            {
-                Start = new DateTime(2014, 2, 20, 0, 0, 0, DateTimeKind.Utc),
-                Stop = new DateTime(2014, 2, 21, 0, 0, 0, DateTimeKind.Utc),
-                SSC = 25544,
-                OutputSettings =
-                {
-                    Step = 2,
-                    TimeFormat = TimeRepresentation.UTC,
-                    CoordinateFormat = {Coord = CoordinateRepresentation.LLA}
-                }
-            };
-            var fromObjectCatalogPath = new CatalogRouteData()
-            {
-                Start = new DateTime(2014, 2, 20, 0, 0, 0, DateTimeKind.Utc),
-                Stop = new DateTime(2014, 2, 21, 0, 0, 0, DateTimeKind.Utc),
-                URI = "https://sdf10.agi.com/SocSearch/catalogs/spacecraft/items/bald7veoYUqyISdiy-KK6w/definition",
-                OutputSettings =
-                {
-                    Step = 2,
-                    TimeFormat = TimeRepresentation.UTC,
-                    CoordinateFormat = {Coord = CoordinateRepresentation.LLA}
-                }
-            };
-            sensorForRequest.FromObjectCatalogPath = fromObjectCatalogPath;
-            sensorForRequest.ToObjectPath = toObjectPath;
-            sensorForRequest.SensorNameContains = "Noaa19_Avhrr3";
-            sensorForRequest.Sunlit = false;
-            sensorForRequest.IncludePath = false;
-            sensorForRequest.Verify();
-
-            // call the service
-            //var forAccessResults = AccessServices.GetSensorForAccess<>(sensorForRequest).Result;
-            //Assert.That(forAccessResults..);
-            
-        }
     }
 }

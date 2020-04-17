@@ -44,9 +44,6 @@ namespace OneSky.Services.Services.Access
                 case GreatArcRouteData _:
                     relativeUri = ServiceUris.AccessSatellitePassesGreatArcUri;
                     break;
-                case CatalogRouteData _:
-                    relativeUri = ServiceUris.AccessSatellitePassesCatalogObjectUri;
-                    break;
             }
 
             if (string.IsNullOrEmpty(relativeUri))

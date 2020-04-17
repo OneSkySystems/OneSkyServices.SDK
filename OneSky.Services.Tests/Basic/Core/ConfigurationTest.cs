@@ -57,13 +57,13 @@ namespace OneSky.Services.Tests.Basic.Core
                 File.Delete(ConfigFilename);
             }
 
-            Assert.Throws<ConfigurationErrorsException>(() => Networking.Init());
+            Assert.Throws<ConfigurationErrorsException>(Networking.Init);
         }
 
         [Test]        
         public void TestConfigurationFileApiKeyNotPresent()
         {
-            StringBuilder configFile = new StringBuilder();
+            var configFile = new StringBuilder();
             configFile.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
             configFile.AppendLine("<configuration>");
             configFile.AppendLine("<appSettings>");
@@ -72,13 +72,13 @@ namespace OneSky.Services.Tests.Basic.Core
             configFile.AppendLine("</configuration>");
 
             File.WriteAllText(ConfigFilename, configFile.ToString());
-            Assert.Throws<ConfigurationErrorsException>(()=>Networking.Init());
+            Assert.Throws<ConfigurationErrorsException>(Networking.Init);
         }
 
         [Test]        
         public void TestConfigurationFileBaseUrlNotPresent()
         {
-            StringBuilder configFile = new StringBuilder();
+            var configFile = new StringBuilder();
             configFile.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
             configFile.AppendLine("<configuration>");
             configFile.AppendLine("<appSettings>");
@@ -87,19 +87,19 @@ namespace OneSky.Services.Tests.Basic.Core
             configFile.AppendLine("</configuration>");
 
             File.WriteAllText(ConfigFilename, configFile.ToString());
-            Assert.Throws<ConfigurationErrorsException>(()=>Networking.Init());
+            Assert.Throws<ConfigurationErrorsException>(Networking.Init);
         }
 
          [Test]        
         public void TestConfigurationFileNoSettingsPresent()
         {
-            StringBuilder configFile = new StringBuilder();
+            var configFile = new StringBuilder();
             configFile.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\" ?>");
             configFile.AppendLine("<configuration>");
             configFile.AppendLine("</configuration>");
 
             File.WriteAllText(ConfigFilename, configFile.ToString());
-            Assert.Throws<ConfigurationErrorsException>(()=>Networking.Init());
+            Assert.Throws<ConfigurationErrorsException>(Networking.Init);
         }
     }
 }

@@ -7,17 +7,14 @@ namespace OneSky.Services.Util{
         public const string GreatArcRouteUri = "/V1/vehiclePath/greatArc";
         public const string TolRouteUri = "/V1/vehiclePath/tol";
         public const string RasterRouteUri = "/V1/vehiclePath/raster";
-        public const string CatalogObjectRouteUri = "/V1/vehiclePath/catalogObject";
 //Satellite Pass Services
         public const string AccessSatellitePassesSiteUri = "/V1/access/satellitePasses/site";
         public const string AccessSatellitePassesSgp4Uri = "/V1/access/satellitePasses/sgp4";
         public const string AccessSatellitePassesPointToPointUri = "/V1/access/satellitePasses/pointToPoint";
-        public const string AccessSatellitePassesCatalogObjectUri = "/V1/access/satellitePasses/catalogObject";
         public const string AccessSatellitePassesRasterUri = "/V1/access/satellitePasses/raster";
         public const string AccessSatellitePassesTolUri = "/V1/access/satellitePasses/tol";
         public const string AccessSatellitePassesSimpleFlightUri = "/V1/access/satellitePasses/simpleFlight";
         public const string AccessSatellitePassesGreatArcUri = "/V1/access/satellitePasses/greatArc";
-        //TODO add SensorFOR URLs here
 // Communication Services
         public const string CommunicationsLinkBudgetUri = "/V1/communications/linkbudget";
 // Navigation Services
@@ -49,7 +46,6 @@ namespace OneSky.Services.Util{
         public const string OverflightSimpleFlightUri = "/V1/overflight/simpleFlight";
         public const string OverflightPointToPointUri = "/V1/overflight/pointToPoint";
         public const string OverflightGreatArcUri = "/V1/overflight/greatArc";
-        public const string OverflightCatalogObjectUri = "/V1/overflight/catalogObject";
 // Airspace Services
         public const string AirspaceSimpleFlightUri = "/V1/airspace/simpleFlight";
         public const string AirspacePointToPointUri = "/V1/airspace/pointToPoint";
@@ -60,7 +56,6 @@ namespace OneSky.Services.Util{
 // CZML visualization
         public const string VehiclePathCzmlSgp4Uri = "/V1/vehiclepath/czml/sgp4";
         public const string VehiclePathCzmlGpsUri = "/V1/vehiclepath/czml/Gps";
-        public const string GlobalPredictedGpsCzmlUri = "/V1/navigation/predicted/czml/global";
         public const string AirspaceCzmlUri = "/V1/airspace/czml";
 // Terrain Services
         public const string TerrainHeightsSiteUri = "/V1/terrain/heights";
