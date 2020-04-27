@@ -8,9 +8,9 @@ namespace OneSky.Services.Inputs
     {
         public ServiceCartographic Position { get; set; }
         public List<SensorState> SensorStates { get; set; }
-        public DateTimeOffset Time { get; set; }
+        public string Time { get; set; }
 
-        public ServiceCartographicWithTime(double latitude, double longitude, double altitude, DateTimeOffset time)
+        public ServiceCartographicWithTime(double latitude, double longitude, double altitude, string time)
         {
             Position = new ServiceCartographic(latitude, longitude, altitude);
             SensorStates = new List<SensorState>();
@@ -18,7 +18,7 @@ namespace OneSky.Services.Inputs
         }
 
         public ServiceCartographicWithTime(double latitude, double longitude, double altitude,
-                                           List<SensorState> sensors, DateTimeOffset time)
+                                           List<SensorState> sensors, string time)
         {
             Position = new ServiceCartographic(latitude, longitude, altitude);
             if (sensors == null)
@@ -32,14 +32,14 @@ namespace OneSky.Services.Inputs
             Time = time;
         }
 
-        public ServiceCartographicWithTime(ServiceCartographic position, DateTimeOffset time)
+        public ServiceCartographicWithTime(ServiceCartographic position, string time)
         {
             Position = position;
             SensorStates = new List<SensorState>();
             Time = time;
         }
 
-        public ServiceCartographicWithTime(ServiceCartographic position, List<SensorState> sensors, DateTimeOffset time)
+        public ServiceCartographicWithTime(ServiceCartographic position, List<SensorState> sensors, string time)
         {
             Position = position;
             if (sensors == null)

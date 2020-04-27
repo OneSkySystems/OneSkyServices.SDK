@@ -85,7 +85,26 @@ namespace OneSky.Services.Tests.Basic.Navigation
             path.Speed = 111.76;
             path.Altitude = 9144.0;
             path.MeanSeaLevel = true;
+            path.OutputSettings = new OutputSettings()
+            {
+                Step = 60,
+                TimeFormat = TimeRepresentation.Epoch,
+                CoordinateFormat = new CoordinateType()
+                {
+                    Coord = CoordinateRepresentation.LLA,
+                    Frame = FrameRepresentation.Fixed
+                }
+            };
+
             input.Path = path;
+            input.BestN = false;
+            input.MinimumElevationAngle = 5.0;
+            input.NumberOfChannels = 12;
+            input.ReceiverNoiseError = 0.8;
+            input.UseBestAvailableData = true;
+            input.ScaleToConfidence = false;
+            input.PercentConfidence = 95;
+
             var expectedResult = JsonConvert.DeserializeObject<RouteNavigationErrorResults>(TestHelper.NavigationBasicPrediction);
             var result = NavigationServices.GetPredictedNavigationErrorsOnARoute(input).Result;
             result.Should().BeEquivalentTo(expectedResult);

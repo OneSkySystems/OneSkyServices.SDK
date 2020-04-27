@@ -9,7 +9,7 @@ namespace OneSky.Services.Inputs
     {
         public ServiceCartesian Position { get; set; }
         public List<SensorState> SensorStates { get; set; }
-        public DateTimeOffset Time { get; set; }
+        public string Time { get; set; }
 
         public ServiceCartesianWithTime()
         {
@@ -17,14 +17,14 @@ namespace OneSky.Services.Inputs
             SensorStates = new List<SensorState>();
         }
 
-        public ServiceCartesianWithTime(ServiceCartesian position, DateTimeOffset time)
+        public ServiceCartesianWithTime(ServiceCartesian position, string time)
         {
             Position = position;
             SensorStates = new List<SensorState>();
             Time = time;
         }
 
-        public ServiceCartesianWithTime(ServiceCartesian position, List<SensorState> sensors, DateTimeOffset time)
+        public ServiceCartesianWithTime(ServiceCartesian position, List<SensorState> sensors, string time)
         {
             Position = position;
             if (sensors == null)
@@ -38,7 +38,7 @@ namespace OneSky.Services.Inputs
             Time = time;
         }
 
-        public ServiceCartesianWithTime(double posX, double posY, double posZ, DateTimeOffset time)
+        public ServiceCartesianWithTime(double posX, double posY, double posZ, string time)
         {
             Position = new ServiceCartesian(posX, posY, posZ);
             SensorStates = new List<SensorState>();
@@ -46,7 +46,7 @@ namespace OneSky.Services.Inputs
         }
 
         public ServiceCartesianWithTime(double posX, double posY, double posZ, List<SensorState> sensors,
-        DateTimeOffset time)
+            string time)
         {
             Position = new ServiceCartesian(posX, posY, posZ);
             if (sensors == null)
