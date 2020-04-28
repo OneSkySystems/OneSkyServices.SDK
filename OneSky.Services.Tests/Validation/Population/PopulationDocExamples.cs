@@ -59,12 +59,12 @@ namespace OneSky.Services.Tests.Validation.Population
             routePath.Waypoints.Add(new ServiceCartographicWithTime()
             {
                 Position = new ServiceCartographic(39.07096,-104.78509,2000.0),
-                Time = DateTimeOffset.Parse("2014-03-25T18:30:00Z")
+                Time = DateTimeOffset.Parse("2014-03-25T18:30:00Z").ToString()
             });
             routePath.Waypoints.Add(new ServiceCartographicWithTime()
             {
                 Position = new ServiceCartographic(38.1,-104.785,1600.0),
-                Time = DateTimeOffset.Parse("2014-03-25T20:30:00Z")
+                Time = DateTimeOffset.Parse("2014-03-25T20:30:00Z").ToString()
             });
 
             routePopData.Path = routePath;

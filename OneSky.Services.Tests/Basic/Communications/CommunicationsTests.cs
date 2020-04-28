@@ -71,9 +71,9 @@ namespace OneSky.Services.Tests.Basic.Communications
             var receiver = new ReceiverData();
             var receiverPath = new GreatArcRouteData(2);
             receiverPath.Waypoints[0].Position = new ServiceCartographic(41, -105.0, 2000.0);
-            receiverPath.Waypoints[0].Time = new DateTimeOffset(2016, 02, 23, 4, 44, 0, new TimeSpan(0));
+            receiverPath.Waypoints[0].Time = new DateTimeOffset(2016, 02, 23, 4, 44, 0, new TimeSpan(0)).ToString();
             receiverPath.Waypoints[1].Position = new ServiceCartographic(43, -104.0, 2000.0);
-            receiverPath.Waypoints[1].Time = new DateTimeOffset(2016, 02, 23, 5, 44, 0, new TimeSpan(0));
+            receiverPath.Waypoints[1].Time = new DateTimeOffset(2016, 02, 23, 5, 44, 0, new TimeSpan(0)).ToString();
             receiverPath.OutputSettings.Step = 900;
             receiverPath.OutputSettings.TimeFormat = TimeRepresentation.UTC;
             receiverPath.OutputSettings.CoordinateFormat.Coord = CoordinateRepresentation.LLA;

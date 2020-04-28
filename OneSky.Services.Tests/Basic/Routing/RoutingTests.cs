@@ -19,19 +19,22 @@ namespace OneSky.Services.Tests.Basic.Routing
             
             request.Waypoints[0].Position = new ServiceCartographic
             {
-                Altitude = 1910,
-                Latitude = 39.0,
-                Longitude = -104.77
+                Altitude = 2000,
+                Latitude = 39.07096,
+                Longitude = -104.78509
             };
-            request.Waypoints[0].Time = new DateTime(2018,10,30,0,0,0);
+            request.Waypoints[0].Time = new DateTime(2014,3,25,18,30,0, DateTimeKind.Utc).ToString();
             request.Waypoints[1].Position = new ServiceCartographic
             {
-                Altitude = 1910,
-                Latitude = 38.794,
-                Longitude = -105.217755
+                Altitude = 2010.0,
+                Latitude = 39.06308,
+                Longitude = -104.78500
             };
-            request.Waypoints[1].Time = new DateTime(2018,10,30,1,0,0);
-            request.OutputSettings.Step = 20;            
+            request.Waypoints[1].Time = new DateTime(2014,3,25,18,30,20, DateTimeKind.Utc).ToString();
+            request.IncludeWaypointsInRoute = true;
+            request.OutputSettings.Step = 5;
+            request.OutputSettings.TimeFormat = TimeRepresentation.Epoch;
+            request.OutputSettings.CoordinateFormat.Coord = CoordinateRepresentation.LLA;
 
             var result = RouteServices.GetRoute<PointToPointRouteData,ServiceCartographicWithTime>(request).Result;
             var expectedResult = JsonConvert.DeserializeObject<List<ServiceCartographicWithTime>>(TestHelper.RouteBasicP2PCarto);
@@ -49,14 +52,14 @@ namespace OneSky.Services.Tests.Basic.Routing
                 Latitude = 39.0,
                 Longitude = -104.77
             };
-            request.Waypoints[0].Time = new DateTime(2018,10,30,0,0,0);
+            request.Waypoints[0].Time = new DateTime(2018,10,30,6,0,0, DateTimeKind.Utc).ToString();
             request.Waypoints[1].Position = new ServiceCartographic
             {
                 Altitude = 1910,
                 Latitude = 38.794,
                 Longitude = -105.217755
             };
-            request.Waypoints[1].Time = new DateTime(2018,10,30,1,0,0);
+            request.Waypoints[1].Time = new DateTime(2018,10,30,7,0,0, DateTimeKind.Utc).ToString();
             request.OutputSettings.Step = 45;     
             request.OutputSettings.CoordinateFormat.Coord = CoordinateRepresentation.XYZ;       
 

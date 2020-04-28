@@ -31,7 +31,7 @@ namespace OneSky.Services.Tests.Validation.Terrain
                 Latitude = 39.07096,
                 Longitude = -104.78509
             };
-            request.Waypoints[0].Time = new DateTime(2014, 02, 10, 10, 30, 0);
+            request.Waypoints[0].Time = new DateTime(2014, 02, 10, 10, 30, 0).ToString();
 
             request.Waypoints[1].Position = new ServiceCartographic
             {
@@ -39,7 +39,7 @@ namespace OneSky.Services.Tests.Validation.Terrain
                 Latitude = 42.64541,
                 Longitude = -61.11172
             };
-            request.Waypoints[1].Time = new DateTime(2014, 02, 10, 18, 30, 20);
+            request.Waypoints[1].Time = new DateTime(2014, 02, 10, 18, 30, 20).ToString();
             request.OutputSettings.Step = 900;
 
             var result = TerrainServices.GetTerrainHeightsAlongARoute<PointToPointRouteData>(request).Result;
@@ -62,7 +62,7 @@ namespace OneSky.Services.Tests.Validation.Terrain
                 Latitude = 39.07096,
                 Longitude = -104.78509
             };
-            request.Waypoints[0].Time = new DateTime(2014, 02, 10, 10, 30, 0);
+            request.Waypoints[0].Time = new DateTime(2014, 02, 10, 10, 30, 0).ToString();
 
             request.Waypoints[1].Position = new ServiceCartographic
             {
@@ -70,7 +70,7 @@ namespace OneSky.Services.Tests.Validation.Terrain
                 Latitude = 42.64541,
                 Longitude = -61.11172
             };
-            request.Waypoints[1].Time = new DateTime(2014, 02, 10, 18, 30, 20);
+            request.Waypoints[1].Time = new DateTime(2014, 02, 10, 18, 30, 20).ToString();
             request.OutputSettings.Step = 3600;
             request.OutputSettings.CoordinateFormat.Coord = CoordinateRepresentation.XYZ;
 

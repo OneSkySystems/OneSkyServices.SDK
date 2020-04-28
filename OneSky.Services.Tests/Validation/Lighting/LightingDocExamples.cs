@@ -60,12 +60,12 @@ namespace OneSky.Services.Tests.Validation.Lighting
             route.Waypoints.Add(new ServiceCartographicWithTime
             {
                 Position = new ServiceCartographic(39.07096,-75.78509,600.0),
-                Time = new DateTimeOffset(2014,03,25,18,30,0,new TimeSpan(0,0,0))
+                Time = new DateTimeOffset(2014,03,25,18,30,0,new TimeSpan(0,0,0)).ToString()
             });
             route.Waypoints.Add(new ServiceCartographicWithTime
             {
                 Position = new ServiceCartographic(42.06308,-75.7850,620.0),
-                Time = new DateTimeOffset(2014,03,25,23,30,20,new TimeSpan(0,0,0))
+                Time = new DateTimeOffset(2014,03,25,23,30,20,new TimeSpan(0,0,0)).ToString()
             });
             
             var solarData = new SolarLightingData<PointToPointRouteData>
@@ -141,12 +141,12 @@ namespace OneSky.Services.Tests.Validation.Lighting
             route.Waypoints.Add(new ServiceCartographicWithTime
             {
                 Position = new ServiceCartographic(39.07096,-75.78509,2000.0),
-                Time = new DateTimeOffset(2014,03,25,18,30,0,new TimeSpan(0,0,0))
+                Time = new DateTimeOffset(2014,03,25,18,30,0,new TimeSpan(0,0,0)).ToString()
             });
             route.Waypoints.Add(new ServiceCartographicWithTime
             {
                 Position = new ServiceCartographic(39.06308,-75.7850,2010.0),
-                Time = new DateTimeOffset(2014,03,25,18,30,20,new TimeSpan(0,0,0))
+                Time = new DateTimeOffset(2014,03,25,18,30,20,new TimeSpan(0,0,0)).ToString()
             });
             route.OutputSettings.Step = 5;
             
