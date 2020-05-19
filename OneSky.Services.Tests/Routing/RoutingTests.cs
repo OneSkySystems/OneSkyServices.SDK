@@ -5,9 +5,9 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Routing;
-using OneSky.Services.Services.Routing;
+using OneSky.Services.Services;
 
-namespace OneSky.Services.Tests.Basic.Routing
+namespace OneSky.Services.Tests.Routing
 {
     [TestFixture]
     public class RoutingTests

@@ -5,11 +5,11 @@ using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Util;
 
-namespace OneSky.Services.Services.Routing
+namespace OneSky.Services.Services
 {
     /// <summary>
     /// A propagated route, defined by a few waypoints.  See the service documentation for 
-    /// notes on the different route types: https://saas.agi.com/V1/Documentation/Routing.
+    /// notes on the different route types.
     /// </summary>
     public class RouteServices
     {

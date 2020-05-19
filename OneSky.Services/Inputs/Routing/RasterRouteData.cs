@@ -17,7 +17,7 @@ namespace OneSky.Services.Inputs.Routing
         /// <summary>
         /// The center of the region to search.
         /// </summary>
-        public ServiceCartographic CenterPoint { get; set; }
+        public ServiceCartographic2D CenterPoint { get; set; }
         /// <summary>
         /// The heading of the route (and the vehicle) as it begins the route. This defines the heading
         /// of all raster lines in the search grid.

@@ -71,6 +71,7 @@ namespace OneSky.Services.Tests.Basic.Navigation
         }
 
         [Test]
+        [Explicit]
         public void TestPredictedErrorsOnSimpleFlightRoute()
         {
             var input = new NavigationPredictionData<IVerifiable> ();
