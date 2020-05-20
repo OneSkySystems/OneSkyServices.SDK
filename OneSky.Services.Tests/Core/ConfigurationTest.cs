@@ -6,7 +6,7 @@ using System.Threading;
 using NUnit.Framework;
 using OneSky.Services.Util;
 
-namespace OneSky.Services.Tests.Basic.Core
+namespace OneSky.Services.Tests.Core
 {
 
     [TestFixture]

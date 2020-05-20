@@ -8,7 +8,7 @@ using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Outputs.Lighting;
 using OneSky.Services.Services.Lighting;
 
-namespace OneSky.Services.Tests.Basic.Lighting
+namespace OneSky.Services.Tests.Lighting
 {
     [TestFixture]
     public class SolarLightingTest

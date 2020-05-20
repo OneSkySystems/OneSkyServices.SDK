@@ -5,7 +5,7 @@ using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Inputs.Weather;
 using OneSky.Services.Services.Weather;
 
-namespace OneSky.Services.Tests.Basic.Weather
+namespace OneSky.Services.Tests.Weather
 {
     [TestFixture]
     public class WeatherTests

@@ -9,7 +9,7 @@ using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Outputs.Access;
 using OneSky.Services.Services.Access;
 
-namespace OneSky.Services.Tests.Validation.Access
+namespace OneSky.Services.Tests.Access
 {
     [TestFixture]
     public class AccessDocExamples

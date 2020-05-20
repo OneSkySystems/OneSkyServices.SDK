@@ -8,7 +8,7 @@ using OneSky.Services.Services.Terrain;
 using System;
 using System.Collections.Generic;
 
-namespace OneSky.Services.Tests.Basic.Terrain
+namespace OneSky.Services.Tests.Terrain
 {
     [TestFixture]
     public class TerrainTests

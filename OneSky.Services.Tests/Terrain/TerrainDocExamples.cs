@@ -4,7 +4,7 @@ using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Services.Terrain;
 
-namespace OneSky.Services.Tests.Validation.Terrain
+namespace OneSky.Services.Tests.Terrain
 {
     [TestFixture]
     public class TerrainDocExamples

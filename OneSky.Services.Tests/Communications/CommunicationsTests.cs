@@ -9,7 +9,7 @@ using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Outputs.Communications;
 using OneSky.Services.Services.Communications;
 
-namespace OneSky.Services.Tests.Basic.Communications
+namespace OneSky.Services.Tests.Communications
 {
     [TestFixture]
     public class CommunicationsTests
