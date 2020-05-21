@@ -23,7 +23,11 @@ namespace OneSky.Services.Tests.Access
             passRequest.Stop = passRequest.Start.AddDays(7);
             passRequest.FromObjectPath = new SiteData
             {
-                Location = new ServiceCartographic(40.0, -75.0, 0.0)
+                Location = new ServiceCartographic(40.0, -75.0, 0.0),
+                OutputSettings = new OutputSettings
+                {
+                    TimeFormat = TimeRepresentation.UTC
+                }
             };
             passRequest.ToObjectLit = true;
             passRequest.FromObjectDark = true;

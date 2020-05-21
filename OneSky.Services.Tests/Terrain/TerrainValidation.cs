@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net;
 using NUnit.Framework;
+using OneSky.Services.Exceptions;
 using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Routing;
+using OneSky.Services.Services;
 using OneSky.Services.Services.Terrain;
 
 namespace OneSky.Services.Tests.Terrain
@@ -66,13 +68,13 @@ namespace OneSky.Services.Tests.Terrain
             };
             request.Waypoints[1].Time = new DateTime(2014, 02, 10, 18, 30, 20).ToString();
             request.OutputSettings.Step = 60; // too many results for a terrain calculation
+            request.OutputSettings.TimeFormat = TimeRepresentation.UTC;
 
-            void ErrorFunction()
-            {
-                var result = TerrainServices.GetTerrainHeightsAlongARoute<PointToPointRouteData>(request).Result;
-            }
-            var ex = Assert.Throws<AggregateException>(ErrorFunction);
-            Assert.That(ex.Message.Contains("BadRequest"));
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => TerrainServices.GetTerrainHeightsAlongARoute<PointToPointRouteData>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(20350)); 
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+           
         }
     }
 }

@@ -34,6 +34,7 @@ namespace OneSky.Services.Tests.Terrain
             };
             request.Waypoints[1].Time = new DateTime(2018,10,30,7,0,0, DateTimeKind.Utc).ToString();
             request.OutputSettings.Step = 20;      
+            request.OutputSettings.TimeFormat = TimeRepresentation.UTC;
 
             var result = TerrainServices.GetTerrainHeightsAlongARoute<PointToPointRouteData>(request).Result;
             var expectedResult = JsonConvert.DeserializeObject<List<TerrainHeightAtLocationResponse>>(TestHelper.TerrainBasicP2P);
@@ -62,6 +63,7 @@ namespace OneSky.Services.Tests.Terrain
             request.Waypoints[1].Time = new DateTime(2014,02,11,1,30,20, DateTimeKind.Utc).ToString();
             request.OutputSettings.Step = 3600;      
             request.OutputSettings.CoordinateFormat.Coord = CoordinateRepresentation.XYZ;
+            request.OutputSettings.TimeFormat = TimeRepresentation.UTC;
 
             var result = TerrainServices.GetTerrainHeightsAlongARoute<GreatArcRouteData>(request).Result;
             var expectedResult = JsonConvert.DeserializeObject<List<TerrainHeightAtLocationResponse>>(TestHelper.TerrainBasicGA);

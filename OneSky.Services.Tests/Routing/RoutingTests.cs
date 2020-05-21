@@ -1,46 +1,229 @@
-using System;
-using System.Collections.Generic;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using OneSky.Services.Exceptions;
 using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Services;
+using System;
+using System.Collections.Generic;
 
 namespace OneSky.Services.Tests.Routing
 {
     [TestFixture]
     public class RoutingTests
-    {       
+    {   
+        #region SGP4
         [Test]
-        public void TestPointToPointRouteCartographic()
+        public void TestSgp4RouteUsingTle()
         {
-            var request = new PointToPointRouteData(2);
-            
-            request.Waypoints[0].Position = new ServiceCartographic
+            var request = new Sgp4RouteData
             {
-                Altitude = 2000,
-                Latitude = 39.07096,
-                Longitude = -104.78509
+                Start = new DateTimeOffset(2018, 11, 1, 3, 0, 0, TimeSpan.Zero),
+                Stop = new DateTimeOffset(2018, 11, 1, 4, 0, 0, TimeSpan.Zero),
+                TLEs = new List<string>
+                {
+                    "1 22871U 93066A   18308.81194535 -.00000197  00000-0  00000-0 0  99982 22871   5.1556  64.6235 0001701 208.3757 358.2742  0.99320289 91475"
+                },
+                OutputSettings =
+                {
+                    Step = 300,
+                    TimeFormat = TimeRepresentation.Epoch,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.XYZ, Frame = FrameRepresentation.Inertial
+                    }
+                }
             };
-            request.Waypoints[0].Time = new DateTime(2014,3,25,18,30,0, DateTimeKind.Utc).ToString();
-            request.Waypoints[1].Position = new ServiceCartographic
-            {
-                Altitude = 2010.0,
-                Latitude = 39.06308,
-                Longitude = -104.78500
-            };
-            request.Waypoints[1].Time = new DateTime(2014,3,25,18,30,20, DateTimeKind.Utc).ToString();
-            request.IncludeWaypointsInRoute = true;
-            request.OutputSettings.Step = 5;
-            request.OutputSettings.TimeFormat = TimeRepresentation.Epoch;
-            request.OutputSettings.CoordinateFormat.Coord = CoordinateRepresentation.LLA;
 
-            var result = RouteServices.GetRoute<PointToPointRouteData,ServiceCartographicWithTime>(request).Result;
-            var expectedResult = JsonConvert.DeserializeObject<List<ServiceCartographicWithTime>>(TestHelper.RouteBasicP2PCarto);
-            result.Should().BeEquivalentTo(expectedResult);
+            var result = RouteServices.GetRoute<Sgp4RouteData,ServiceCartesianWithTime>(request).Result;
+            var expectedResult = JsonConvert.DeserializeObject<List<ServiceCartesianWithTime>>(TestHelper.RoutingSgp4FromTle);
+            result.Should().BeEquivalentTo(expectedResult, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+            );
         }
 
+        [Test]
+        public void TestSgp4RouteUsingBadSsc()
+        {
+            var request = new Sgp4RouteData
+            {
+                Start = new DateTimeOffset(2018, 11, 1, 3, 0, 0, TimeSpan.Zero),
+                Stop = new DateTimeOffset(2018, 11, 1, 4, 0, 0, TimeSpan.Zero),
+                SSC = 99999,
+                OutputSettings =
+                {
+                    Step = 300,
+                    TimeFormat = TimeRepresentation.Epoch,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.XYZ, Frame = FrameRepresentation.Inertial
+                    }
+                }
+            };
+
+           var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<Sgp4RouteData, ServiceCartesianWithTime>(request));
+           Assert.That(exc.ErrorId, Is.EqualTo(20800));
+           Assert.That(exc.HelpLink, !Is.Empty);
+           Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestSgp4RouteUsingBadTle()
+        {
+            var request = new Sgp4RouteData
+            {
+                Start = new DateTimeOffset(2018, 11, 1, 3, 0, 0, TimeSpan.Zero),
+                Stop = new DateTimeOffset(2018, 11, 1, 4, 0, 0, TimeSpan.Zero),
+                TLEs = new List<string>
+                {
+                    "1 22871U 93066A   18308.81194535 -.00071   5.1556  64.6235 0001701 208.3757 358.2742  0.99320289 91475"
+                },
+                OutputSettings =
+                {
+                    Step = 300,
+                    TimeFormat = TimeRepresentation.Epoch,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.XYZ, Frame = FrameRepresentation.Inertial
+                    }
+                }
+            };
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<Sgp4RouteData, ServiceCartesianWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(9999));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestSgp4RouteUsingSscAndTle()
+        {
+            var request = new Sgp4RouteData
+            {
+                Start = new DateTimeOffset(2018, 11, 1, 3, 0, 0, TimeSpan.Zero),
+                Stop = new DateTimeOffset(2018, 11, 1, 4, 0, 0, TimeSpan.Zero),
+                SSC = 25544,
+                TLEs = new List<string>
+                {
+                    "1 22871U 93066A   18308.81194535 -.00000197  00000-0  00000-0 0  99982 22871   5.1556  64.6235 0001701 208.3757 358.2742  0.99320289 91475"
+                },
+                OutputSettings =
+                {
+                    Step = 300,
+                    TimeFormat = TimeRepresentation.Epoch,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.XYZ, Frame = FrameRepresentation.Inertial
+                    }
+                }
+            };
+
+            var result = RouteServices.GetRoute<Sgp4RouteData,ServiceCartesianWithTime>(request).Result;
+            // Expected result is an ephemeris generated fom the SSC, not the TLE.
+            var expectedResult = JsonConvert.DeserializeObject<List<ServiceCartesianWithTime>>(TestHelper.RoutingSgp4FromSsc);
+            result.Should().BeEquivalentTo(expectedResult, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+            );
+        }
+
+        [Test]
+        public void TestSgp4RouteMissingStart()
+        {
+            var request = new Sgp4RouteData
+            {
+                //Start = new DateTimeOffset(2014, 2, 20, 3, 0, 0, TimeSpan.Zero),
+                Stop = new DateTimeOffset(2014, 2, 20, 4, 0, 0, TimeSpan.Zero),
+                SSC = 25544,
+                OutputSettings =
+                {
+                    Step = 300,
+                    TimeFormat = TimeRepresentation.Epoch,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.XYZ, Frame = FrameRepresentation.Inertial
+                    }
+                }
+            };
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<Sgp4RouteData,ServiceCartesianWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(9999)); // AS-141 will change this to a valid value
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestSgp4RouteMissingStop()
+        {
+            var request = new Sgp4RouteData
+            {
+                Start = new DateTimeOffset(2014, 2, 20, 3, 0, 0, TimeSpan.Zero),
+                //Stop = new DateTimeOffset(2014, 2, 20, 4, 0, 0, TimeSpan.Zero),
+                SSC = 25544,
+                OutputSettings =
+                {
+                    Step = 300,
+                    TimeFormat = TimeRepresentation.Epoch,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.XYZ, Frame = FrameRepresentation.Inertial
+                    }
+                }
+            };
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<Sgp4RouteData,ServiceCartesianWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(21800)); // AS-142 will change this to a correct value
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestSgp4RouteMissingSscAndTle()
+        {
+            var request = new Sgp4RouteData
+            {
+                Start = new DateTimeOffset(2014, 2, 20, 3, 0, 0, TimeSpan.Zero),
+                Stop = new DateTimeOffset(2014, 2, 20, 4, 0, 0, TimeSpan.Zero),
+                //SSC = 25544,
+                OutputSettings =
+                {
+                    Step = 300,
+                    TimeFormat = TimeRepresentation.Epoch,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.XYZ, Frame = FrameRepresentation.Inertial
+                    }
+                }
+            };
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<Sgp4RouteData,ServiceCartesianWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(24150)); 
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestSgp4RouteOptionalOutputSettings()
+        {
+            var request = new Sgp4RouteData
+            {
+                Start = new DateTimeOffset(2014, 2, 20, 3, 0, 0, TimeSpan.Zero),
+                Stop = new DateTimeOffset(2014, 2, 20, 4, 0, 0, TimeSpan.Zero),
+                SSC = 25544
+            };
+
+            // https://saas.onesky.xyz/V1/Documentation/Common#outputsettings
+            Assert.That(request.OutputSettings,!Is.Null);
+            Assert.That(request.OutputSettings.Step,Is.EqualTo(60));
+            Assert.That(request.OutputSettings.TimeFormat,Is.EqualTo(TimeRepresentation.Epoch));
+            Assert.That(request.OutputSettings.CoordinateFormat.Coord,Is.EqualTo(CoordinateRepresentation.LLA));
+        }
+        #endregion
+
+        #region Point To Point
+        // Point to Point
         [Test]
         public void TestPointToPointRouteCartesian()
         {
@@ -60,11 +243,12 @@ namespace OneSky.Services.Tests.Routing
                 Longitude = -105.217755
             };
             request.Waypoints[1].Time = new DateTime(2018,10,30,7,0,0, DateTimeKind.Utc).ToString();
-            request.OutputSettings.Step = 45;     
+            request.OutputSettings.Step = 45;
+            request.OutputSettings.TimeFormat = TimeRepresentation.UTC;
             request.OutputSettings.CoordinateFormat.Coord = CoordinateRepresentation.XYZ;       
 
             var result = RouteServices.GetRoute<PointToPointRouteData,ServiceCartesianWithTime>(request).Result;
-            var expectedResult = JsonConvert.DeserializeObject<List<ServiceCartesianWithTime>>(TestHelper.RouteBasicP2PCart);
+            var expectedResult = JsonConvert.DeserializeObject<List<ServiceCartesianWithTime>>(TestHelper.RoutingP2PCart);
             result.Should().BeEquivalentTo(expectedResult);
         }
 
@@ -76,5 +260,133 @@ namespace OneSky.Services.Tests.Routing
             
             Assert.NotNull(request);
         }
+        #endregion
+
+        #region Simple Flight
+        [Test]
+        public void TestSimpleFlightLong()
+        {
+            var request = new SimpleFlightRouteData
+            {
+                Start = new DateTimeOffset(2016, 9, 18, 0, 0, 0, TimeSpan.Zero),
+                TurningRadius = 15,
+                Speed = 200,
+                Altitude = 100,
+                MeanSeaLevel = true,
+                OutputSettings =
+                {
+                    Step = 3600,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+            request.Waypoints.Add(new ServiceCartographic2D(35.0,-82.0));
+            request.Waypoints.Add(new ServiceCartographic2D(-35.0,-150.0));
+            
+            var result = RouteServices.GetRoute<SimpleFlightRouteData,ServiceCartographicWithTime>(request).Result;
+            var expectedResult = JsonConvert.DeserializeObject<List<ServiceCartographicWithTime>>(TestHelper.RoutingSimpleFlightLong);
+            result.Should().BeEquivalentTo(expectedResult,options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+                .When(info => info.SelectedMemberPath == "Time")
+            );
+        }
+        #endregion
+
+        #region Great Arc
+        [Test]
+        public void TestGreatArcRouteNotEnoughWaypoints()
+        {
+            var request = new GreatArcRouteData(2);
+            
+            request.Waypoints[0].Position = new ServiceCartographic
+            {
+                Altitude = 2000,
+                Latitude = 39.07096,
+                Longitude = -104.78509
+            };
+            request.Waypoints[0].Time = "2014-03-25T18:30:00";
+            request.OutputSettings.Step = 5;
+            request.OutputSettings.TimeFormat = TimeRepresentation.Epoch;
+            request.OutputSettings.CoordinateFormat.Coord = CoordinateRepresentation.LLA;       
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<GreatArcRouteData,ServiceCartographicWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(23600));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+        #endregion
+
+        #region Takeoff and Langing
+        [Test]
+        public void TestTakeoffAndLandingRoute()
+        {
+            var request = new TolRouteData
+            {
+                Start = new DateTimeOffset(2014, 01, 18, 8, 34, 56, TimeSpan.Zero),
+                //TakeOffPoint = new ServiceCartographic(31.0, -122.0, 15.0),
+                LandingPoint = new ServiceCartographic(40.0, -77.0, 180.0),
+                Speed = 400,
+                Altitude = 9144,
+                MeanSeaLevel = true,
+                OutputSettings = new OutputSettings
+                {
+                    Step = 3600,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+            
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<TolRouteData,ServiceCartographicWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(24000));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+        #endregion
+
+        #region Raster Search
+         [Test]
+        public void TestRasterSearchRoute()
+        {
+            var request = new RasterRouteData()
+            {
+                Start = new DateTimeOffset(2014, 01, 18, 8, 34, 56,TimeSpan.Zero),
+                CenterPoint = new ServiceCartographic2D(31.0, -122.0),
+                Length = 20000,
+                Width = 30000,
+                SearchHeading = 45,
+                TurningRadius = 1000,
+                Speed = 110,
+                Altitude = 2000,
+                MeanSeaLevel = true,
+                OutputSettings = new OutputSettings
+                {
+                    Step = 300,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+            
+            var result = RouteServices.GetRoute<RasterRouteData,ServiceCartographicWithTime>(request).Result;
+            var expectedResult = JsonConvert.DeserializeObject<List<ServiceCartographicWithTime>>(TestHelper.RoutingRasterSearchDocExample);
+            result.Should().BeEquivalentTo(expectedResult,options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+                .When(info => info.SelectedMemberPath == "Time")
+            );
+        }
+        #endregion
+
     }
 }
