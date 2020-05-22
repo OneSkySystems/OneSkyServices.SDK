@@ -220,10 +220,10 @@ namespace OneSky.Services.Tests.Routing
             Assert.That(request.OutputSettings.TimeFormat,Is.EqualTo(TimeRepresentation.Epoch));
             Assert.That(request.OutputSettings.CoordinateFormat.Coord,Is.EqualTo(CoordinateRepresentation.LLA));
         }
+
         #endregion
 
         #region Point To Point
-        // Point to Point
         [Test]
         public void TestPointToPointRouteCartesian()
         {
@@ -235,14 +235,14 @@ namespace OneSky.Services.Tests.Routing
                 Latitude = 39.0,
                 Longitude = -104.77
             };
-            request.Waypoints[0].Time = new DateTime(2018,10,30,6,0,0, DateTimeKind.Utc).ToString();
+            request.Waypoints[0].Time = "2018-10-30T06:00:00Z";
             request.Waypoints[1].Position = new ServiceCartographic
             {
                 Altitude = 1910,
                 Latitude = 38.794,
                 Longitude = -105.217755
             };
-            request.Waypoints[1].Time = new DateTime(2018,10,30,7,0,0, DateTimeKind.Utc).ToString();
+            request.Waypoints[1].Time = "2018-10-30T07:00:00Z";
             request.OutputSettings.Step = 45;
             request.OutputSettings.TimeFormat = TimeRepresentation.UTC;
             request.OutputSettings.CoordinateFormat.Coord = CoordinateRepresentation.XYZ;       
@@ -259,6 +259,73 @@ namespace OneSky.Services.Tests.Routing
             var request = new PointToPointRouteData(json);
             
             Assert.NotNull(request);
+        }
+        [Test]
+        public void TestPointToPointRouteMissingWaypoint()
+        {
+            var request = new PointToPointRouteData(2);
+
+            request.Waypoints[0].Position = new ServiceCartographic
+            {
+                Altitude = 1910,
+                Latitude = 39.0,
+                Longitude = -104.77
+            };
+            request.Waypoints[0].Time = "2018-10-30T06:00:00Z";
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<PointToPointRouteData, ServiceCartesianWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(23600));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestPointToPointRouteOptionalOutputSettings()
+        {
+            var request = new PointToPointRouteData(2);
+
+            request.Waypoints[0].Position = new ServiceCartographic
+            {
+                Altitude = 1910,
+                Latitude = 39.0,
+                Longitude = -104.77
+            };
+            request.Waypoints[0].Time = "2018-10-30T06:00:00Z";
+            request.Waypoints[1].Position = new ServiceCartographic
+            {
+                Altitude = 1910,
+                Latitude = 38.794,
+                Longitude = -105.217755
+            };
+
+            request.Waypoints[1].Time = "2018-10-30T07:00:00Z";
+            // https://saas.onesky.xyz/V1/Documentation/Common#outputsettings
+            Assert.That(request.OutputSettings, !Is.Null);
+            Assert.That(request.OutputSettings.Step, Is.EqualTo(60));
+            Assert.That(request.OutputSettings.TimeFormat, Is.EqualTo(TimeRepresentation.Epoch));
+            Assert.That(request.OutputSettings.CoordinateFormat.Coord, Is.EqualTo(CoordinateRepresentation.LLA));
+        }
+        [Test]
+        public void TestPointToPointRouteOptionalIncludeWaypoints()
+        {
+            var request = new PointToPointRouteData(2);
+
+            request.Waypoints[0].Position = new ServiceCartographic
+            {
+                Altitude = 1910,
+                Latitude = 39.0,
+                Longitude = -104.77
+            };
+            request.Waypoints[0].Time = "2018-10-30T06:00:00Z";
+            request.Waypoints[1].Position = new ServiceCartographic
+            {
+                Altitude = 1910,
+                Latitude = 38.794,
+                Longitude = -105.217755
+            };
+            request.Waypoints[1].Time = "2018-10-30T07:00:00Z";
+
+            Assert.That(request.IncludeWaypointsInRoute, Is.True);
         }
         #endregion
 
@@ -294,6 +361,68 @@ namespace OneSky.Services.Tests.Routing
                 .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
                 .When(info => info.SelectedMemberPath == "Time")
             );
+        }
+        [Test]
+        public void TestSimpleFlightMissingStart()
+        {
+            var request = new SimpleFlightRouteData
+            {
+               // Start = new DateTimeOffset(2016, 9, 18, 0, 0, 0, TimeSpan.Zero),
+                TurningRadius = 15,
+                Speed = 200,
+                Altitude = 100,
+                MeanSeaLevel = true,
+                OutputSettings =
+                {
+                    Step = 3600,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+            request.Waypoints.Add(new ServiceCartographic2D(35.0, -82.0));
+            request.Waypoints.Add(new ServiceCartographic2D(-35.0, -150.0));
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<SimpleFlightRouteData, ServiceCartographicWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(23600));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+        [Test]
+        public void TestSimpleFlightMissingWaypoint()
+        {
+            var request = new SimpleFlightRouteData
+            {
+                Start = new DateTimeOffset(2016, 9, 18, 0, 0, 0, TimeSpan.Zero),
+                TurningRadius = 15,
+                Speed = 200,
+                Altitude = 100,
+                MeanSeaLevel = true,
+                OutputSettings =
+                {
+                    Step = 3600,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+            request.Waypoints.Add(new ServiceCartographic2D(35.0, -82.0));
+            //request.Waypoints.Add(new ServiceCartographic2D(-35.0, -150.0));
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<SimpleFlightRouteData, ServiceCartographicWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(23600));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+        [Test]
+        public void TestSimpleFlightOptionalTurnRadius()
+        {
+            var request = new SimpleFlightRouteData();
+            Assert.That(request.TurningRadius, Is.EqualTo(200));
         }
         #endregion
 

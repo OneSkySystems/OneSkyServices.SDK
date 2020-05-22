@@ -50,9 +50,13 @@ namespace OneSky.Services.Util
                     try
                     {
                         var errorResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(errorResponse);
-                        asEx = new AnalyticalServicesException(int.Parse(errorResult["ErrorId"]), errorResult["Message"],
-                            response.StatusCode);
-                        asEx.HelpLink = errorResult["HelpUrl"];
+                        asEx = new AnalyticalServicesException(
+                            int.Parse(errorResult["ErrorId"]),
+                            errorResult["Message"],
+                            response.StatusCode)
+                        {
+                            HelpLink = errorResult["HelpUrl"]
+                        };
                     }
                     catch
                     {
