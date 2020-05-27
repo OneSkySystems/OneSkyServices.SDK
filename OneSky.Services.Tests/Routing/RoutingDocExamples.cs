@@ -136,7 +136,7 @@ namespace OneSky.Services.Tests.Routing
         }
 
         [Test]
-        public void TestTakeoffAndLandingRoute()
+        public void TestTolRoute()
         {
             var request = new TolRouteData
             {

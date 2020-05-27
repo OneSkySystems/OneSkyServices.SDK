@@ -17,6 +17,7 @@ namespace OneSky.Services.Services
         /// Gets a propagated route.
         /// </summary>
         /// <param name="routeData">The data defining the route.</param>
+        /// <param name="verifyLocally">True if the routeData should call its Verify method before calling the service. Optional, default is false.</param>
         /// <typeparam name="T">The input route data type. Examples might be PointToPointRouteData
         /// or Sgp4Data.</typeparam>
         /// <typeparam name="R">The output type. This must be consistent with <see cref="CoordinateFormat"/></typeparam>
@@ -24,11 +25,14 @@ namespace OneSky.Services.Services
         /// <returns>A Task containing a List of type R results. R is typically 
         /// <see cref="ServiceCartographicWithTime"/> or a similar type.
         /// </returns>
-        public static async Task<List<R>> GetRoute<T,R>(T routeData) where T: IVerifiable
+        public static async Task<List<R>> GetRoute<T,R>(T routeData, bool verifyLocally = false) where T: IVerifiable
         {
-            routeData.Verify();
+            if (verifyLocally)
+            {
+                routeData.Verify();
+            }
 
-            string relativeUri = string.Empty;
+            var relativeUri = string.Empty;
             if(typeof(T) == typeof(PointToPointRouteData)){
                 relativeUri = ServiceUris.PointToPointRouteUri;
             }

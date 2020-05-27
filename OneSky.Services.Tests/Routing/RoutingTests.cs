@@ -470,7 +470,7 @@ namespace OneSky.Services.Tests.Routing
 
         #region Takeoff and Langing
         [Test]
-        public void TestTakeoffAndLandingRoute()
+        public void TestTolRoute()
         {
             var request = new TolRouteData
             {
@@ -601,11 +601,12 @@ namespace OneSky.Services.Tests.Routing
 
         #region Raster Search
         [Test]
-        public void TestRasterSearchRoute()
+        [Explicit]
+        public void TestRasterSearchRouteMissingStart()
         {
             var request = new RasterRouteData()
             {
-                Start = new DateTimeOffset(2014, 01, 18, 8, 34, 56,TimeSpan.Zero),
+                //Start = new DateTimeOffset(2014, 01, 18, 8, 34, 56,TimeSpan.Zero),
                 CenterPoint = new ServiceCartographic2D(31.0, -122.0),
                 Length = 20000,
                 Width = 30000,
@@ -624,17 +625,139 @@ namespace OneSky.Services.Tests.Routing
                     }
                 }
             };
-            
-            var result = RouteServices.GetRoute<RasterRouteData,ServiceCartographicWithTime>(request).Result;
-            var expectedResult = JsonConvert.DeserializeObject<List<ServiceCartographicWithTime>>(TestHelper.RoutingRasterSearchDocExample);
-            result.Should().BeEquivalentTo(expectedResult,options => options
-                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
-                .WhenTypeIs<double>()
-                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
-                .When(info => info.SelectedMemberPath == "Time")
-            );
+            //AS-145 will have the service throw the right type of error
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<RasterRouteData, ServiceCartographicWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(24000)); 
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestRasterSearchRouteMissingCenterPoint()
+        {
+            var request = new RasterRouteData()
+            {
+                Start = new DateTimeOffset(2014, 01, 18, 8, 34, 56,TimeSpan.Zero),
+                //CenterPoint = new ServiceCartographic2D(31.0, -122.0),
+                Length = 20000,
+                Width = 30000,
+                SearchHeading = 45,
+                TurningRadius = 1000,
+                Speed = 110,
+                Altitude = 2000,
+                MeanSeaLevel = true,
+                OutputSettings = new OutputSettings
+                {
+                    Step = 300,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<RasterRouteData, ServiceCartographicWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(24000)); 
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestRasterSearchRouteMissingLength()
+        {
+            var request = new RasterRouteData()
+            {
+                Start = new DateTimeOffset(2014, 01, 18, 8, 34, 56, TimeSpan.Zero),
+                CenterPoint = new ServiceCartographic2D(31.0, -122.0),
+                //Length = 20000,
+                Width = 30000,
+                SearchHeading = 45,
+                TurningRadius = 1000,
+                Speed = 110,
+                Altitude = 2000,
+                MeanSeaLevel = true,
+                OutputSettings = new OutputSettings
+                {
+                    Step = 300,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<RasterRouteData, ServiceCartographicWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(23600)); //AS-145 will update this code to 24000
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestRasterSearchRouteMissingWidth()
+        {
+            var request = new RasterRouteData()
+            {
+                Start = new DateTimeOffset(2014, 01, 18, 8, 34, 56, TimeSpan.Zero),
+                CenterPoint = new ServiceCartographic2D(31.0, -122.0),
+                Length = 20000,
+                //Width = 30000,
+                SearchHeading = 45,
+                TurningRadius = 1000,
+                Speed = 110,
+                Altitude = 2000,
+                MeanSeaLevel = true,
+                OutputSettings = new OutputSettings
+                {
+                    Step = 300,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<RasterRouteData, ServiceCartographicWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(23600)); //AS-145 will update this code to 24000
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestRasterSearchRouteOptionalSearchHeading()
+        {
+            var request = new RasterRouteData();
+            Assert.That(request.SearchHeading,Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TestRasterSearchRouteOptionalTurningRadius()
+        {
+            var request = new RasterRouteData();
+            Assert.That(request.TurningRadius, Is.EqualTo(200));
+        }
+
+        [Test]
+        public void TestRasterSearchRouteOptionalSpeed()
+        {
+            var request = new RasterRouteData();
+            Assert.That(request.Speed, Is.EqualTo(65));
+        }
+
+        [Test]
+        public void TestRasterSearchRouteOptionalAltitude()
+        {
+            var request = new RasterRouteData();
+            Assert.That(request.Altitude, Is.EqualTo(1000));
+        }
+
+        [Test]
+        public void TestRasterSearchRouteOptionalMeanSeaLevel()
+        {
+            var request = new RasterRouteData();
+            Assert.That(request.MeanSeaLevel, Is.EqualTo(true));
         }
         #endregion
+
 
     }
 }
