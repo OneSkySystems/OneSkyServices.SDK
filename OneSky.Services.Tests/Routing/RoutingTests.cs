@@ -424,6 +424,24 @@ namespace OneSky.Services.Tests.Routing
             var request = new SimpleFlightRouteData();
             Assert.That(request.TurningRadius, Is.EqualTo(200));
         }
+        [Test]
+        public void TestSimpleFlightOptionalSpeed()
+        {
+            var request = new SimpleFlightRouteData();
+            Assert.That(request.Speed, Is.EqualTo(65));
+        }
+        [Test]
+        public void TestSimpleFlightOptionalAltitude()
+        {
+            var request = new SimpleFlightRouteData();
+            Assert.That(request.Altitude, Is.EqualTo(1000));
+        }
+        [Test]
+        public void TestSimpleFlightOptionalMeanSeaLevel()
+        {
+            var request = new SimpleFlightRouteData();
+            Assert.That(request.MeanSeaLevel, Is.EqualTo(true));
+        }
         #endregion
 
         #region Great Arc
@@ -478,10 +496,111 @@ namespace OneSky.Services.Tests.Routing
             Assert.That(exc.HelpLink, !Is.Empty);
             Assert.That(exc.Message, !Is.Empty);
         }
+
+        [Test]
+        public void TestTolMissingStart()
+        {
+            var request = new TolRouteData()
+            {
+                // Start = new DateTimeOffset(2014, 01, 18, 8, 34, 56, TimeSpan.Zero),
+                TakeOffPoint = new ServiceCartographic(31.0, -122.0, 15.0),
+                LandingPoint = new ServiceCartographic(40.0, -77.0, 180.0),
+                Speed = 200,
+                Altitude = 100,
+                MeanSeaLevel = true,
+                OutputSettings =
+                {
+                    Step = 3600,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<TolRouteData, ServiceCartographicWithTime>(request));
+            //Assert.That(exc.ErrorId, Is.EqualTo(24000)); // AS-144 will fix this error and generate the proper code
+            Assert.That(exc.ErrorId, Is.EqualTo(9999));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+        [Test]
+        public void TestTolMissingTakeoffPoint()
+        {
+            var request = new TolRouteData()
+            {
+                Start = new DateTimeOffset(2014, 01, 18, 8, 34, 56, TimeSpan.Zero),
+                //TakeOffPoint = new ServiceCartographic(31.0, -122.0, 15.0),
+                LandingPoint = new ServiceCartographic(40.0, -77.0, 180.0),
+                Speed = 200,
+                Altitude = 100,
+                MeanSeaLevel = true,
+                OutputSettings =
+                {
+                    Step = 3600,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<TolRouteData, ServiceCartographicWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(24000));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+        [Test]
+        public void TestTolMissingLandingPoint()
+        {
+            var request = new TolRouteData()
+            {
+                Start = new DateTimeOffset(2014, 01, 18, 8, 34, 56, TimeSpan.Zero),
+                TakeOffPoint = new ServiceCartographic(31.0, -122.0, 15.0),
+                //LandingPoint = new ServiceCartographic(40.0, -77.0, 180.0),
+                Speed = 200,
+                Altitude = 100,
+                MeanSeaLevel = true,
+                OutputSettings =
+                {
+                    Step = 3600,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat =
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<TolRouteData, ServiceCartographicWithTime>(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(24000));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+        [Test]
+        public void TestTolMissingOptionalSpeed()
+        {
+            var request = new TolRouteData();
+            Assert.That(request.Speed, Is.EqualTo(65));
+        }
+        [Test]
+        public void TestTolMissingOptionalAltitude()
+        {
+            var request = new TolRouteData();
+            Assert.That(request.Altitude, Is.EqualTo(1000));
+        }
+        [Test]
+        public void TestTolMissingOptionalMeanSeaLevel()
+        {
+            var request = new TolRouteData();
+            Assert.That(request.MeanSeaLevel, Is.EqualTo(true));
+        }
         #endregion
 
         #region Raster Search
-         [Test]
+        [Test]
         public void TestRasterSearchRoute()
         {
             var request = new RasterRouteData()

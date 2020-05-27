@@ -333,3 +333,4 @@ ASALocalRun/
 # Ignore the config file that stores API Keys
 AGI.AnalyticalServices.config
 OneSky.Services.config
+OneSky.Services.config.debug
