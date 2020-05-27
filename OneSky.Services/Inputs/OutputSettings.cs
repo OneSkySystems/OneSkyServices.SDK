@@ -21,7 +21,7 @@ namespace OneSky.Services.Inputs
         public OutputSettings()
         {
             Step = 60;
-            TimeFormat = TimeRepresentation.UTC;
+            TimeFormat = TimeRepresentation.Epoch;
             CoordinateFormat = new CoordinateType();
         }
         /// <summary>

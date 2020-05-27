@@ -5,7 +5,7 @@ using OneSky.Services.Inputs.Lighting;
 using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Services.Lighting;
 
-namespace OneSky.Services.Tests.Validation.Lighting
+namespace OneSky.Services.Tests.Lighting
 {
     [TestFixture]
     public class LightingDocExamples

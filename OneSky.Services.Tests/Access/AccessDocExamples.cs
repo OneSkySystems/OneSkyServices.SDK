@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Drawing;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -8,36 +9,41 @@ using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Outputs.Access;
 using OneSky.Services.Services.Access;
 
-namespace OneSky.Services.Tests.Validation.Access
+namespace OneSky.Services.Tests.Access
 {
     [TestFixture]
-    public class AccessValidation
+    public class AccessDocExamples
     {
         [Test]
-        public void GeoToLeo()
+        public void SatellitePasses_IssAccessToSite()
         {
             var passRequest = new SatelliteAccessPassData<IVerifiable>
             {
                 Start = new DateTime(2014, 8, 19, 0, 0, 0, DateTimeKind.Utc),
                 Stop = new DateTime(2014, 8, 19, 12, 0, 0, DateTimeKind.Utc)
             };
-            var fromObjectPath = new Sgp4RouteData
+            var sd = new SiteData
             {
-                Start = new DateTime(2014, 8, 19, 0, 0, 0, DateTimeKind.Utc),
-                Stop = new DateTime(2014, 8, 19, 12, 0, 0, DateTimeKind.Utc),
-                SSC = 19548,
+                Location = new ServiceCartographic(40.0012, -75.661, 19.0),
+                MeanSeaLevel = true,
                 OutputSettings =
                 {
-                    TimeFormat = TimeRepresentation.UTC
+                    Step = 30,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat = {Coord = CoordinateRepresentation.LLA}
                 }
             };
-            passRequest.FromObjectPath = fromObjectPath;
+            passRequest.FromObjectPath = sd;
             passRequest.SSCs.Add(25544); // the International Space Station
-            passRequest.FromObjectDark = false;
+            passRequest.FromObjectDark = true;
             passRequest.ToObjectLit = true;
-            passRequest.UseMinElevation = false;
+            passRequest.UseMinElevation = true;
+            passRequest.FromObjectMinElevation = 10.0;
             passRequest.LineOfSight = true;
+            passRequest.IncludePathData = true;
             passRequest.IncludePathCzml = true;
+            passRequest.SatelliteOrbitColor = Color.Magenta.ToString();
+            passRequest.PassLinkColor = Color.Green.ToString();
             passRequest.Verify();
 
             // call the service
@@ -48,7 +54,7 @@ namespace OneSky.Services.Tests.Validation.Access
             });
 
             // object graph verification of actual results with expected results
-            var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatelliteAccessGeoToLeo);
+            var expected = JsonConvert.DeserializeObject<SatellitePassResults<ServiceCartographicWithTime>>(TestHelper.SatellitePassesIssAccessToSite);
             passResults.Passes.Should().BeEquivalentTo(expected.Passes, options => options
                 .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
                 .WhenTypeIs<double>()
@@ -61,6 +67,5 @@ namespace OneSky.Services.Tests.Validation.Access
                     info.SelectedMemberPath == "MaximumElevationData.Time")
             );
         }
-
     }
 }

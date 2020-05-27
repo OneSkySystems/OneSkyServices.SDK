@@ -11,7 +11,7 @@ using OneSky.Services.Services.Overflight;
 using OneSky.Services.Services.Terrain;
 using System.Collections.Generic;
 
-namespace OneSky.Services.Tests.Validation.Overflight
+namespace OneSky.Services.Tests.Overflight
 {
     [TestFixture]
     public class RegionalOverflightDocExamples

@@ -8,7 +8,7 @@ namespace OneSky.Services.Inputs.Routing
     {
         public ServiceCartographic TakeOffPoint { get; set; }
         public ServiceCartographic LandingPoint { get; set; }
-        public DateTime Start { get; set; }
+        public DateTimeOffset Start { get; set; }
         public double Speed { get; set; }
         public double Altitude { get; set; }
         public bool MeanSeaLevel { get; set; }

@@ -7,7 +7,7 @@ using OneSky.Services.Inputs.Population;
 using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Services.Lighting;
 
-namespace OneSky.Services.Tests.Validation.Population
+namespace OneSky.Services.Tests.Population
 {
     [TestFixture]
     public class PopulationDocExamples

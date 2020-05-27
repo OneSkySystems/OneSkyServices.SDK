@@ -34,7 +34,7 @@ namespace OneSky.Services.Inputs.Routing
             {
                 Waypoints.Add(new ServiceCartographicWithTime());
             }
-            IncludeWaypointsInRoute = false;
+            IncludeWaypointsInRoute = true;
             OutputSettings = new OutputSettings();
         }
         /// <summary>
@@ -54,7 +54,7 @@ namespace OneSky.Services.Inputs.Routing
         public PointToPointRouteData()
         {
             Waypoints = new List<ServiceCartographicWithTime>();
-            IncludeWaypointsInRoute = false;
+            IncludeWaypointsInRoute = true;
             OutputSettings = new OutputSettings();
         }
 

@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using OneSky.Services.Exceptions;
 
 namespace OneSky.Services.Util
 {
@@ -39,7 +40,31 @@ namespace OneSky.Services.Util
             HttpContent postContent = new StringContent(postDataS,Encoding.UTF8,"application/json");
 
             var response = await _client.PostAsync(address, postContent);
-            if (!response.IsSuccessStatusCode) throw new WebException("Error code: " + response.StatusCode);
+            if (!response.IsSuccessStatusCode)
+            {
+                // Get the error data from the service response
+                var errorResponse = response.Content.ReadAsStringAsync().Result;
+                if (!string.IsNullOrEmpty(errorResponse))
+                {
+                    AnalyticalServicesException asEx;
+                    try
+                    {
+                        var errorResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(errorResponse);
+                        asEx = new AnalyticalServicesException(
+                            int.Parse(errorResult["ErrorId"]),
+                            errorResult["Message"],
+                            response.StatusCode)
+                        {
+                            HelpLink = errorResult["HelpUrl"]
+                        };
+                    }
+                    catch
+                    {
+                        asEx = new AnalyticalServicesException(9999,$"Unknown service error response: {errorResponse}");
+                    }
+                    throw asEx;
+                }
+            }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
             

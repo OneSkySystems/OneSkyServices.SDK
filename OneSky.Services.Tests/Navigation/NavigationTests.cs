@@ -8,7 +8,7 @@ using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Outputs.Navigation;
 using OneSky.Services.Services.Navigation;
 
-namespace OneSky.Services.Tests.Basic.Navigation
+namespace OneSky.Services.Tests.Navigation
 {
     [TestFixture]
     public class NavigationTests
@@ -71,6 +71,7 @@ namespace OneSky.Services.Tests.Basic.Navigation
         }
 
         [Test]
+        [Explicit]
         public void TestPredictedErrorsOnSimpleFlightRoute()
         {
             var input = new NavigationPredictionData<IVerifiable> ();
