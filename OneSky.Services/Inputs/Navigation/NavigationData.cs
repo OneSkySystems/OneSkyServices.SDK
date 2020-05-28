@@ -57,9 +57,7 @@ namespace OneSky.Services.Inputs.Navigation
         /// A list of supported GNSS constellations to use. If empty, only Gps will be used.
         /// </summary>
         public List<NavigationConstellationType> Constellations { get; set; }
-        // User properties that may be submitted with the api call
-        public Dictionary<string, string> Properties { get; }
-
+        
         public NavigationData ()
 	    {
             NumberOfChannels = 12;
@@ -71,8 +69,6 @@ namespace OneSky.Services.Inputs.Navigation
             SofLocation = string.Empty;
 	        UseBestAvailableData = true;
             Constellations = new List<NavigationConstellationType>();
-	        Properties = new Dictionary<string, string>();
-
         }
 
         public virtual void Verify()

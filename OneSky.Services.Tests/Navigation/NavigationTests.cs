@@ -1,77 +1,108 @@
 ﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using OneSky.Services.Exceptions;
 using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Navigation;
 using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Outputs.Navigation;
-using OneSky.Services.Services.Navigation;
+using OneSky.Services.Services;
 
 namespace OneSky.Services.Tests.Navigation
 {
     [TestFixture]
     public class NavigationTests
-    {       
+    {
+        #region GpsData
+        //PSF
         [Test]
         public void TestPsfDataWithdate()
         {
             var psf = NavigationServices.GetPsfData(new DateTime(2019,01,01)).Result;
             Assert.That(!string.IsNullOrEmpty(psf));
+            Assert.That(psf, Contains.Substring("PredictionSupportFile"));
+            Assert.That(psf,Contains.Substring("2019-01-01"));
         }
         [Test]
         public void TestPsfDataWithoutdate()
         {
             var psf = NavigationServices.GetPsfData().Result;
             Assert.That(!string.IsNullOrEmpty(psf));
+            Assert.That(psf, Contains.Substring("PredictionSupportFile"));
         }
+
+        //PAF
         [Test]
         public void TestPafWithoutDate()
         {
             var paf = NavigationServices.GetPafData().Result;
+            Assert.That(paf, Contains.Substring("PerformanceAssessmentFile"));
             Assert.That(!string.IsNullOrEmpty(paf));
         }
-         [Test]
+        [Test]
         public void TestPafWithDate()
         {
             var paf = NavigationServices.GetPafData(new DateTime(2019,01,01)).Result;
             Assert.That(!string.IsNullOrEmpty(paf));
+            Assert.That(paf, Contains.Substring("PerformanceAssessmentFile"));
+            Assert.That(paf, Contains.Substring("2019-01-01"));
         }
+       
+        //SOF and GPS Outages
         [Test]
-        public void TestSofWithoutDate()
+        public void TestLatestSof()
         {
             var sof = NavigationServices.GetSofData().Result;
             Assert.That(!string.IsNullOrEmpty(sof));
+            Assert.That(sof, Contains.Substring("SatelliteOutageFile"));
+            Assert.That(sof, Contains.Substring("Latest"));
         }
-         [Test]
-        public void TestSofWithDate()
+
+        [Test]
+        public void TestGpsOutagesWithDates()
         {
-            var sof = NavigationServices.GetSofData(new DateTime(2019,01,01)).Result;
-            Assert.That(!string.IsNullOrEmpty(sof));
+            //Update to use GetGpsOutages when AS-146 is addressed
+            var result = NavigationServices.GetGpsOutagesString(
+                new DateTime(2018, 02, 01),
+                new DateTime(2018, 04, 01)).Result;
+            Assert.That(!string.IsNullOrEmpty(result));
+            Assert.That(result, Contains.Substring("2018-03-09T06:15:00Z"));
         }
+
+        [Test]
+        public void TestGpsOutagesWithDatesAndPrn()
+        {
+            // Update to use GetGpsOutages when AS-146 is addressed
+            var outages = NavigationServices.GetGpsOutagesString(
+                new DateTime(2018, 01, 01), 
+                new DateTime(2018, 11, 01),
+                18).Result;
+            Assert.That(!string.IsNullOrEmpty(outages));
+            Assert.That(outages,Contains.Substring("2018-01-23T16:50:00Z"));
+        }
+
+        //Almanac
         [Test]
         public void TestAlmanacWithoutDate()
         {
             var alm = NavigationServices.GetAlmanacData().Result;
             Assert.That(!string.IsNullOrEmpty(alm));
+            Assert.That(alm,Contains.Substring("SEMAlmanac"));
         }
          [Test]
         public void TestAlmanacWithDate()
         {
             var alm = NavigationServices.GetAlmanacData(new DateTime(2019,02,04)).Result;
             Assert.That(!string.IsNullOrEmpty(alm));
+            Assert.That(alm, Contains.Substring("SEMAlmanac"));
+            Assert.That(alm, Contains.Substring("2019-02-04"));
         }
+        #endregion
 
+        #region Predicted
         [Test]
-        public void TestGpsOutagesDatesAndPrn()
-        {
-            var outages = NavigationServices.GetGpsOutages(
-                new DateTime(2019,01,01),new DateTime(2019,03,22)).Result;
-            Assert.That(!string.IsNullOrEmpty(outages));
-        }
-
-        [Test]
-        [Explicit]
         public void TestPredictedErrorsOnSimpleFlightRoute()
         {
             var input = new NavigationPredictionData<IVerifiable> ();
@@ -88,7 +119,7 @@ namespace OneSky.Services.Tests.Navigation
             path.MeanSeaLevel = true;
             path.OutputSettings = new OutputSettings()
             {
-                Step = 60,
+                Step = 7200,
                 TimeFormat = TimeRepresentation.Epoch,
                 CoordinateFormat = new CoordinateType()
                 {
@@ -103,12 +134,59 @@ namespace OneSky.Services.Tests.Navigation
             input.NumberOfChannels = 12;
             input.ReceiverNoiseError = 0.8;
             input.UseBestAvailableData = true;
-            input.ScaleToConfidence = false;
+            input.ScaleToConfidence = true;
             input.PercentConfidence = 95;
 
-            var expectedResult = JsonConvert.DeserializeObject<RouteNavigationErrorResults>(TestHelper.NavigationBasicPrediction);
+            var expectedResult = JsonConvert.DeserializeObject<RouteNavigationErrorResults>(TestHelper.NavigationRoutePredictionScaled);
             var result = NavigationServices.GetPredictedNavigationErrorsOnARoute(input).Result;
-            result.Should().BeEquivalentTo(expectedResult);
+            result.Should().BeEquivalentTo(expectedResult, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+                .When(info => info.SelectedMemberPath == "Time")
+            );
         }
+
+        [Test]
+        public void TestPredictedErrorsOnSimpleFlightRouteNoBestAvailableData()
+        {
+            var input = new NavigationPredictionData<IVerifiable>();
+            var path = new SimpleFlightRouteData
+            {
+                Start = DateTime.UtcNow.AddMonths(3)
+            };
+            path.Waypoints.Add(new ServiceCartographic2D(39.0, -104.77));
+            path.Waypoints.Add(new ServiceCartographic2D(30.0, -98.0));
+            path.Waypoints.Add(new ServiceCartographic2D(40.0, -77.0));
+            path.TurningRadius = 1000.0;
+            path.Speed = 111.76;
+            path.Altitude = 9144.0;
+            path.MeanSeaLevel = true;
+            path.OutputSettings = new OutputSettings()
+            {
+                Step = 7200,
+                TimeFormat = TimeRepresentation.Epoch,
+                CoordinateFormat = new CoordinateType()
+                {
+                    Coord = CoordinateRepresentation.LLA,
+                    Frame = FrameRepresentation.Fixed
+                }
+            };
+
+            input.Path = path;
+            input.BestN = false;
+            input.MinimumElevationAngle = 5.0;
+            input.NumberOfChannels = 12;
+            input.ReceiverNoiseError = 0.8;
+            input.UseBestAvailableData = false;
+            input.ScaleToConfidence = true;
+            input.PercentConfidence = 95;
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => NavigationServices.GetPredictedNavigationErrorsOnARoute(input));
+            Assert.That(exc.ErrorId, Is.EqualTo(21300));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+        #endregion
     }
 }

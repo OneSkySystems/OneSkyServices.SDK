@@ -30,7 +30,7 @@ namespace OneSky.Services.Inputs.Navigation
             ScaleToConfidence = true;
             PercentConfidence = 95;
             UseBestAvailableData = true;
-            PsfLocation = String.Empty;
+            PsfLocation = string.Empty;
 	    }
 
         /// <summary>

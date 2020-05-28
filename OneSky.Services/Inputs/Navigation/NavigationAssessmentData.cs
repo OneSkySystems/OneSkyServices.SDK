@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 namespace OneSky.Services.Inputs.Navigation
 {
     /// <summary>
-    /// Data required to perform a navigation prediction calculation
+    /// Data required to perform a navigation assessment calculation
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class NavigationAssessmentData<T> : NavigationData<T>
@@ -33,8 +33,10 @@ namespace OneSky.Services.Inputs.Navigation
         public override void Verify()
         {
             base.Verify();
+
             if (!(Path is ISiteInput)) return;
-            // how to check other paths here? Can't really - just let the evaluation happen and the evaluate will throw a DataUnavailableException, that will then be caught by SiteAndRouteNavigation which will also throw this error.
+            // This duration check only works for sites - length of a generic path is not available.
+            // The service will through this same exception if the path is too long
             var dur = AnalysisStop - AnalysisStart;
             if (!ExtrapolatePafData && dur.TotalHours >= 23.75) // one day's worth of paf data
             {
