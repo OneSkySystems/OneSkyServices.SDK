@@ -188,5 +188,145 @@ namespace OneSky.Services.Tests.Navigation
             Assert.That(exc.Message, !Is.Empty);
         }
         #endregion
+
+        #region Assessed
+        [Test]
+        public void TestAssessedErrorsAtSiteExtrapolated()
+        {
+            var request = new NavigationAssessmentData<IVerifiable>()
+            {
+                Path = new SiteData
+                {
+                    Location = new ServiceCartographic(35.6606, -77.376, 37.46),
+                    OutputSettings = new OutputSettings() {Step = 7200},
+                    MeanSeaLevel = false
+                },
+                AnalysisStart = DateTime.Parse("2014-01-30T20:00"),
+                AnalysisStop = DateTime.Parse("2014-01-31T00:00"),
+                NumberOfChannels = 50,
+                MinimumElevationAngle = 10.5,
+                BestN = false,
+                UseBestAvailableData = true,
+                ExtrapolatePafData = true
+
+            };
+
+            var expectedResult = JsonConvert.DeserializeObject<SiteNavigationErrorResults>(TestHelper.NavigationSiteAssessedExtrapolated);
+            var result = NavigationServices.GetAssessedNavigationErrorsAtASite(request).Result;
+            result.Should().BeEquivalentTo(expectedResult, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+                .When(info => info.SelectedMemberPath == "Time")
+            );
+        }
+
+        [Test]
+        public void TestAssessedErrorsAtSiteExtrapolatedWithoutPermission()
+        {
+            var request = new NavigationAssessmentData<IVerifiable>()
+            {
+                Path = new SiteData
+                {
+                    Location = new ServiceCartographic(35.6606, -77.376, 37.46),
+                    OutputSettings = new OutputSettings() {Step = 7200},
+                    MeanSeaLevel = false
+                },
+                AnalysisStart = DateTime.Parse("2014-01-30T20:00"),
+                AnalysisStop = DateTime.Parse("2014-01-31T00:00"),
+                NumberOfChannels = 50,
+                MinimumElevationAngle = 10.5,
+                BestN = false,
+                UseBestAvailableData = true,
+                // ExtrapolatePafData is false by default
+            };
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => NavigationServices.GetAssessedNavigationErrorsAtASite(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(21250));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestAssessedErrorsOnRouteExtrapolated()
+        {
+            var request = new NavigationAssessmentData<IVerifiable>();
+            var path = new SimpleFlightRouteData
+            {
+                Start = DateTime.Parse("2016-09-18T00:00:00Z"),
+                Waypoints = new List<ServiceCartographic2D>
+                {
+                    new ServiceCartographic2D(35, -82),
+                    new ServiceCartographic2D(-35, -150)
+                },
+                TurningRadius = 15,
+                Speed = 20,
+                Altitude = 100,
+                MeanSeaLevel = true,
+                OutputSettings = new OutputSettings
+                {
+                    Step = 172800,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat = new CoordinateType
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+            request.Path = path;
+            request.NumberOfChannels = 50;
+            request.MinimumElevationAngle = 10.5;
+            request.BestN = false;
+            request.UseBestAvailableData = true;
+            request.ExtrapolatePafData = true;
+
+            var expectedResult = JsonConvert.DeserializeObject<RouteNavigationErrorResults>(TestHelper.NavigationRouteAssessedExtrapolated);
+            var result = NavigationServices.GetAssessedNavigationErrorsOnARoute(request).Result;
+            result.Should().BeEquivalentTo(expectedResult, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+                .When(info => info.SelectedMemberPath == "Time")
+            );
+        }
+        #endregion
+
+        #region Dop
+        [Test]
+        public void TestGpsDopAtASite()
+        {
+            var request = new NavigationData<IVerifiable>()
+            {
+                AnalysisStart = DateTime.Parse("2014-05-03T00:00"),
+                AnalysisStop = DateTime.Parse("2014-05-03T02:00"),
+                NumberOfChannels = 90,
+                MinimumElevationAngle = -90,
+                EarthLineOfSight = false, // Earth is invisible
+                Constellations = new List<NavigationConstellationType> 
+                {
+                    NavigationConstellationType.Gps,
+                    NavigationConstellationType.Glonass,
+                    NavigationConstellationType.Sbas
+                },
+                Path = new SiteData
+                {
+                    Location = new ServiceCartographic(39.0, -104.0, 1000.0),
+                    OutputSettings = new OutputSettings
+                    {
+                        Step = 3600
+                    },
+                    MeanSeaLevel = true
+                }
+            };
+            var result = NavigationServices.GetDopAtASite(request).Result;
+            var expectedResult = JsonConvert.DeserializeObject<SiteDopResults>(TestHelper.NAvigationSiteDopEarthLineOfSightOff);
+            result.Should().BeEquivalentTo(expectedResult, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+                .When(info => info.SelectedMemberPath == "Time")
+            );
+        }
+        #endregion
     }
 }
