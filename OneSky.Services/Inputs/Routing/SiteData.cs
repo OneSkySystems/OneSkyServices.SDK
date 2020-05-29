@@ -1,4 +1,6 @@
-﻿namespace OneSky.Services.Inputs.Routing
+﻿using Newtonsoft.Json;
+
+namespace OneSky.Services.Inputs.Routing
 {
     /// <summary>
     /// A static location on the Earth.
@@ -33,6 +35,10 @@
         {
             Location.Verify();
             OutputSettings.Verify();
+        }
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

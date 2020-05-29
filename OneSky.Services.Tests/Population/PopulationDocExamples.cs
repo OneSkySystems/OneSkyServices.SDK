@@ -18,7 +18,7 @@ namespace OneSky.Services.Tests.Population
         {
             var sitePopData = new PointPopulationData
             {
-                Path = new SiteLocationData
+                Path = new SiteData
                 {
                     Location = new ServiceCartographic(44.0,-104.77,0)
                 },
