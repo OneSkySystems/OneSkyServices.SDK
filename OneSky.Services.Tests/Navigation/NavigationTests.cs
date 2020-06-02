@@ -350,6 +350,48 @@ namespace OneSky.Services.Tests.Navigation
                 .When(info => info.SelectedMemberPath == "Time")
             );
         }
+
+        [Test]
+        public void TestDopOnSimpleFlightRoute()
+        {
+            var request = new NavigationData<IVerifiable>();
+            var path = new SimpleFlightRouteData
+            {
+                Start = DateTime.Parse("2018-11-05T06:00:00Z"),
+                Waypoints = new List<ServiceCartographic2D>
+                {
+                    new ServiceCartographic2D(35, -82),
+                    new ServiceCartographic2D(-35, -150)
+                },
+                TurningRadius = 15,
+                Speed = 20,
+                Altitude = 100,
+                MeanSeaLevel = true,
+                OutputSettings = new OutputSettings
+                {
+                    Step = 172800,
+                    TimeFormat = TimeRepresentation.UTC,
+                    CoordinateFormat = new CoordinateType
+                    {
+                        Coord = CoordinateRepresentation.LLA
+                    }
+                }
+            };
+            request.Path = path;
+            request.NumberOfChannels = 12;
+            request.MinimumElevationAngle = 10.5;
+            request.BestN = false;
+            request.UseBestAvailableData = true;
+
+            var expectedResult = JsonConvert.DeserializeObject<RouteDopResults>(TestHelper.NavigationRouteDopExample);
+            var result = NavigationServices.GetDopOnARoute(request).Result;
+            result.Should().BeEquivalentTo(expectedResult, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+                .When(info => info.SelectedMemberPath == "Time")
+            );
+        }
         #endregion
     }
 }
