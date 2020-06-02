@@ -293,21 +293,44 @@ namespace OneSky.Services.Tests.Navigation
 
         #region Dop
         [Test]
-        public void TestGpsDopAtASite()
+        public void TestGpsDopAtASiteGpsOnly()
+        {
+            var request = new NavigationData<IVerifiable>()
+            {
+                AnalysisStart = DateTime.Parse("2014-05-03T00:00"),
+                AnalysisStop = DateTime.Parse("2014-05-03T04:00"),
+                NumberOfChannels = 30,
+                MinimumElevationAngle = 7.5,
+                Path = new SiteData
+                {
+                    Location = new ServiceCartographic(39.0, -104.0, 1000.0),
+                    OutputSettings = new OutputSettings
+                    {
+                        Step = 3600
+                    },
+                    MeanSeaLevel = true
+                }
+            };
+            var result = NavigationServices.GetDopAtASite(request).Result;
+            var expectedResult = JsonConvert.DeserializeObject<SiteDopResults>(TestHelper.NavigationSiteDopGpsOnly);
+            result.Should().BeEquivalentTo(expectedResult, options => options
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .WhenTypeIs<double>()
+                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+                .When(info => info.SelectedMemberPath == "Time")
+            );
+        }
+
+        [Test]
+        public void TestGpsDopAtASiteEarthLosOff()
         {
             var request = new NavigationData<IVerifiable>()
             {
                 AnalysisStart = DateTime.Parse("2014-05-03T00:00"),
                 AnalysisStop = DateTime.Parse("2014-05-03T02:00"),
                 NumberOfChannels = 90,
-                MinimumElevationAngle = -90,
+                MinimumElevationAngle = -90.0,
                 EarthLineOfSight = false, // Earth is invisible
-                Constellations = new List<NavigationConstellationType> 
-                {
-                    NavigationConstellationType.Gps,
-                    NavigationConstellationType.Glonass,
-                    NavigationConstellationType.Sbas
-                },
                 Path = new SiteData
                 {
                     Location = new ServiceCartographic(39.0, -104.0, 1000.0),

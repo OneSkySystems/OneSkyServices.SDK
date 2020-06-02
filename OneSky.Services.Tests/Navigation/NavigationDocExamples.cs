@@ -189,13 +189,9 @@ namespace OneSky.Services.Tests.Navigation
                 }
             };
             var result = NavigationServices.GetDopAtASite(request).Result;
-            var expectedResult = JsonConvert.DeserializeObject<SiteDopResults>(TestHelper.NavigationSiteDopDocExample);
-            result.Should().BeEquivalentTo(expectedResult, options => options
-                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
-                .WhenTypeIs<double>()
-                .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
-                .When(info => info.SelectedMemberPath == "Time")
-            );
+            // We cannot directly test the values returned here, because the TLEs used for the additional constellations are regularly updated,
+            // So analysis from the past will not always be using the same data files.
+            Assert.That(result.Dops.Length,Is.EqualTo(5));
         }
 
         [Test]
