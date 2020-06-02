@@ -11,11 +11,10 @@ using OneSky.Services.Services.Communications;
 
 namespace OneSky.Services.Tests.Communications
 {
-    [TestFixture]
-    public class CommunicationsTests
+    public class CommunicationDocExamples
     {
         [Test]
-        public void TestLinkBudgetsSimpleFlight()
+        public void TestLinkBudgetsAlongAPath()
         {
             var Frequency = 14500000000.0;
             var Power = 1000.0;
@@ -30,7 +29,7 @@ namespace OneSky.Services.Tests.Communications
             var td = new TransmitterData();
             var sd = new SiteData
             {
-                Location = new ServiceCartographic(39.0, -105.0, 2100.0),
+                Location = new ServiceCartographic(42.0, -105.0, 2000.0),
                 MeanSeaLevel = true
             };
             td.Path = sd;
@@ -43,7 +42,7 @@ namespace OneSky.Services.Tests.Communications
             var jammer1 = new TransmitterData();
             var jammer1Path = new SiteData
             {
-                Location = new ServiceCartographic(39.001, -105.0, 1900),
+                Location = new ServiceCartographic(42.001, -105.0, 1900),
                 MeanSeaLevel = true
             };
             jammer1.Path = jammer1Path;
@@ -55,7 +54,7 @@ namespace OneSky.Services.Tests.Communications
             var jammer2 = new TransmitterData();
             var jammer2Path = new SiteData
             {
-                Location = new ServiceCartographic(38.999, -105.0, 1900),
+                Location = new ServiceCartographic(41.997, -105.0, 1900),
                 MeanSeaLevel = true
             };
             jammer2.Path = jammer2Path;
@@ -69,38 +68,27 @@ namespace OneSky.Services.Tests.Communications
             request.InterferenceSources.Add(jammer2);
             // Receiver
             var receiver = new ReceiverData();
-            var receiverPath = new SimpleFlightRouteData()
-            {
-                Start = new DateTime(2017, 2, 10, 0, 0, 0, DateTimeKind.Utc),
-                Waypoints = new List<ServiceCartographic2D>()
-                {
-                    new ServiceCartographic2D(32.6, -104.5),
-                    new ServiceCartographic2D(40.0, -105)
-                },
-                TurningRadius = 2500,
-                Speed = 500,
-                Altitude = 5000,
-                MeanSeaLevel = true,
-                OutputSettings = new OutputSettings()
-                {
-                    Step = 900,
-                    TimeFormat = TimeRepresentation.UTC,
-                    CoordinateFormat = new CoordinateType()
-                    {
-                        Coord = CoordinateRepresentation.LLA,
-                        Frame = FrameRepresentation.Fixed
-                    }
-                },
-            };
-
+            var receiverPath = new GreatArcRouteData(2);
+            receiverPath.Waypoints[0].Position = new ServiceCartographic(41, -105.0, 2000.0);
+            receiverPath.Waypoints[0].Time = new DateTimeOffset(2016, 02, 23, 4, 44, 0, new TimeSpan(0)).ToString();
+            receiverPath.Waypoints[1].Position = new ServiceCartographic(43, -104.0, 2000.0);
+            receiverPath.Waypoints[1].Time = new DateTimeOffset(2016, 02, 23, 5, 44, 0, new TimeSpan(0)).ToString();
+            receiverPath.OutputSettings.Step = 900;
+            receiverPath.OutputSettings.TimeFormat = TimeRepresentation.UTC;
+            receiverPath.OutputSettings.CoordinateFormat.Coord = CoordinateRepresentation.LLA;
+            receiverPath.OutputSettings.CoordinateFormat.Frame = FrameRepresentation.Fixed;
             receiver.Path = receiverPath;
-            receiver.PathRouteType = RouteTypes.SimpleFlight;
+            receiver.PathRouteType = RouteTypes.GreatArc;
             receiver.TargetFrequency = Frequency;
             receiver.Bandwidth = Bandwidth;
             receiver.AmplifierGain = 100;
             receiver.NoiseFactor = 2.0;
             receiver.ReferenceTemperature = 16.85;
             request.Receiver = receiver;
+            // Other settings
+            request.UseTirem = true;
+            request.TiremSettings.SurfaceHumidity = 10.0;
+            request.TiremSettings.SurfaceRefractivity = 200.0;
 
             // call the service
             var rawResponse = CommunicationServices.GetLinkBudget<string>(request).Result;
@@ -110,7 +98,7 @@ namespace OneSky.Services.Tests.Communications
             });
 
             // object graph verification of actual results with expected results
-            var expected = JsonConvert.DeserializeObject<CommunicationsResults>(TestHelper.CommunicationsLinkBudgetsSimpleFlight);
+            var expected = JsonConvert.DeserializeObject<CommunicationsResults>(TestHelper.CommunicationsLinkBudgetsGreatArc);
             commResult.Should().BeEquivalentTo(expected, options => options
                 .Using<double>(ctx =>
                 {

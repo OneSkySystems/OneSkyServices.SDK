@@ -11,7 +11,7 @@ using OneSky.Services.Services.Access;
 namespace OneSky.Services.Tests.Access
 {
     [TestFixture]
-    public class AccessValidation
+    public class AccessTests
     {
         [Test]
         public void GeoToLeo()
