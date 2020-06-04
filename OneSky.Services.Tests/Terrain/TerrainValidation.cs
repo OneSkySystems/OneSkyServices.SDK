@@ -12,40 +12,7 @@ namespace OneSky.Services.Tests.Terrain
     [TestFixture]
     public class TerrainValidation
     {
-        [Test]
-        public void TestBadLatitude()
-        {
-            void ErrorFunction()
-            {
-                var s = TerrainServices.GetTerrainHeightsAtASite(91, -105.043498).Result;
-            }
-            var ex = Assert.Throws<AggregateException>(ErrorFunction);
-            Assert.That(ex.Message.Contains("BadRequest"));
-            void ErrorFunction2()
-            {
-                var s = TerrainServices.GetTerrainHeightsAtASite(-91, -105.043498).Result;
-            }
-            ex = Assert.Throws<AggregateException>(ErrorFunction2);
-            Assert.That(ex.Message.Contains("BadRequest"));
-        }
-
-        [Test]
-        public void TestBadLongitude()
-        {
-            void ErrorFunction()
-            {
-                var s = TerrainServices.GetTerrainHeightsAtASite(80, -361).Result;
-            }
-            var ex = Assert.Throws<AggregateException>(ErrorFunction);
-            Assert.That(ex.Message.Contains("BadRequest"));
-
-            void ErrorFunction2()
-            {
-                var s = TerrainServices.GetTerrainHeightsAtASite(80, 361).Result;
-            }
-            ex = Assert.Throws<AggregateException>(ErrorFunction2);
-            Assert.That(ex.Message.Contains("BadRequest"));
-        }
+        
 
         [Test]
         public void TestTooManyPoints()

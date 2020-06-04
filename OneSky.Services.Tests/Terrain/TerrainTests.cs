@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using OneSky.Services.Exceptions;
 using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Outputs.Terrain;
@@ -24,58 +25,85 @@ namespace OneSky.Services.Tests.Terrain
                 Latitude = 39.0,
                 Longitude = -104.77
             };
-            request.Waypoints[0].Time = new DateTime(2018,10,30,6,0,0, DateTimeKind.Utc).ToString();
+            request.Waypoints[0].Time = "2018-10-30T06:00:00Z";
 
             request.Waypoints[1].Position = new ServiceCartographic
             {
-                Altitude = 1910,
-                Latitude = 38.794,
-                Longitude = -105.217755
-            };
-            request.Waypoints[1].Time = new DateTime(2018,10,30,7,0,0, DateTimeKind.Utc).ToString();
-            request.OutputSettings.Step = 20;      
-            request.OutputSettings.TimeFormat = TimeRepresentation.UTC;
-
-            var result = TerrainServices.GetTerrainHeightsAlongARoute<PointToPointRouteData>(request).Result;
-            var expectedResult = JsonConvert.DeserializeObject<List<TerrainHeightAtLocationResponse>>(TestHelper.TerrainBasicP2P);
-            result.Should().BeEquivalentTo(expectedResult);
-        }
-
-        [Test]
-        public void TestTerrainAlongGreatArcRoute()
-        {
-            var request = new GreatArcRouteData(2);
-            
-            request.Waypoints[0].Position = new ServiceCartographic
-            {
-                Altitude = 20000.0,
-                Latitude = 39.07096,
-                Longitude = -104.78509
-            };
-            request.Waypoints[0].Time = new DateTime(2014,02,10,17,30,0, DateTimeKind.Utc).ToString();
-
-            request.Waypoints[1].Position = new ServiceCartographic
-            {
-                Altitude = 100.0,
+                Altitude = 100,
                 Latitude = 42.64541,
                 Longitude = -61.11172
             };
-            request.Waypoints[1].Time = new DateTime(2014,02,11,1,30,20, DateTimeKind.Utc).ToString();
-            request.OutputSettings.Step = 3600;      
-            request.OutputSettings.CoordinateFormat.Coord = CoordinateRepresentation.XYZ;
+            request.Waypoints[1].Time = "2018-10-30T07:00:00Z";
+            request.OutputSettings.Step = 1800;      
             request.OutputSettings.TimeFormat = TimeRepresentation.UTC;
 
-            var result = TerrainServices.GetTerrainHeightsAlongARoute<GreatArcRouteData>(request).Result;
-            var expectedResult = JsonConvert.DeserializeObject<List<TerrainHeightAtLocationResponse>>(TestHelper.TerrainBasicGA);
-            result.Should().BeEquivalentTo(expectedResult);
+            var result = TerrainServices.GetTerrainHeightsAlongARoute(request).Result;
+            var expectedResult = JsonConvert.DeserializeObject<List<TerrainHeightAtLocationResponse>>(TestHelper.TerrainP2PRoute);
+            result.Should().BeEquivalentTo(expectedResult, options => options
+               .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+               .WhenTypeIs<double>()
+               .Using<string>(ctx => ctx.Subject.Should().StartWith(ctx.Expectation.Substring(0, TestHelper.PrecisionStringLengthTime)))
+               .When(info => info.SelectedMemberPath == "Time")
+           );
         }
 
-         [Test]
-        public void TestTerrainAtASite()
+        [Test]
+        public void TestTerrainAlongPointToPointRouteTooManyPoints()
         {
-            var result = TerrainServices.GetTerrainHeightsAtASite(39.0,-104.77).Result;
-            var expectedResult = JsonConvert.DeserializeObject<Heights>(TestHelper.TerrainBasicSite);
-            result.Should().BeEquivalentTo(expectedResult);
+
+            var request = new PointToPointRouteData(2);
+
+            request.Waypoints[0].Position = new ServiceCartographic
+            {
+                Altitude = 20000,
+                Latitude = 39.07096,
+                Longitude = -104.78509
+            };
+            request.Waypoints[0].Time = "2018-10-30T10:30:00Z";
+
+            request.Waypoints[1].Position = new ServiceCartographic
+            {
+                Altitude = 100,
+                Latitude = 42.64541,
+                Longitude = -61.11172
+            };
+            request.Waypoints[1].Time = "2018-10-30T18:30:00Z";
+            request.OutputSettings.Step = 60;
+            request.OutputSettings.TimeFormat = TimeRepresentation.UTC;
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => TerrainServices.GetTerrainHeightsAlongARoute(request));
+            Assert.That(exc.ErrorId, Is.EqualTo(20350));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestBadLatitude()
+        {
+
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => TerrainServices.GetTerrainHeightsAtASite(91, -105.043498));
+            Assert.That(exc.ErrorId, Is.EqualTo(23600));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+
+            exc = Assert.CatchAsync<AnalyticalServicesException>(() => TerrainServices.GetTerrainHeightsAtASite(-91, -105.043498));
+            Assert.That(exc.ErrorId, Is.EqualTo(23600));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+        }
+
+        [Test]
+        public void TestBadLongitude()
+        {
+            var exc = Assert.CatchAsync<AnalyticalServicesException>(() => TerrainServices.GetTerrainHeightsAtASite(80, -361));
+            Assert.That(exc.ErrorId, Is.EqualTo(23600));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
+
+            exc = Assert.CatchAsync<AnalyticalServicesException>(() => TerrainServices.GetTerrainHeightsAtASite(80, 361));
+            Assert.That(exc.ErrorId, Is.EqualTo(23600));
+            Assert.That(exc.HelpLink, !Is.Empty);
+            Assert.That(exc.Message, !Is.Empty);
         }
     }
 }
