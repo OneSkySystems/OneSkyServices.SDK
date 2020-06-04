@@ -1,8 +1,9 @@
 using System;
-using OneSky.Services.Exceptions;
 using Newtonsoft.Json;
+using OneSky.Services.Exceptions;
+using OneSky.Services.Inputs.Airspace;
 
-namespace OneSky.Services.Inputs.Airspace
+namespace OneSky.Services.Inputs.Visualization
 {
     public class AirspaceCzmlData: IVerifiable
     {

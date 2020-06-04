@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
-using OneSky.Services.Exceptions;
 using Newtonsoft.Json;
+using OneSky.Services.Exceptions;
 
-namespace OneSky.Services.Inputs.Navigation
+namespace OneSky.Services.Inputs.Visualization
 {
     public class CzmlGpsOrbit : IVerifiable
     {
