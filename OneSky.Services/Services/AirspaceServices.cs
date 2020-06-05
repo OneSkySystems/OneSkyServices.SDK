@@ -11,29 +11,29 @@ namespace OneSky.Services.Services.Airspace
 {
     /// <summary>
     /// Airspace methods.  See the service documentation for 
-    /// notes on the different airspace call types: https://saas.agi.com/V1/Documentation/Airspace.
+    /// notes on the different airspace call types: https://saas.onesky.xyz/V1/Documentation/Airspace.
     /// </summary>
     public class AirspaceServices
     {
         public static async Task<StaticAirspaceAccessResult<AirspaceCrossingResult<IPathResult>>> 
-            GetAirspaceCrossingsForARoute<R>(StaticAirspaceRouteData<IVerifiable> airspaceRouteData){
-            string relativeUri = string.Empty;
+            GetAirspaceCrossingsForARoute(StaticAirspaceRouteData<IVerifiable> airspaceRouteData){
+            var relativeUri = string.Empty;
             
             airspaceRouteData.Verify();
             
-            if((Type)airspaceRouteData.Path == typeof(PointToPointRouteData)){
+            if(airspaceRouteData.Path.GetType() == typeof(PointToPointRouteData)){
                 relativeUri = ServiceUris.AccessSatellitePassesPointToPointUri;
             }
-            else if((Type)airspaceRouteData.Path == typeof(SimpleFlightRouteData)){
+            else if(airspaceRouteData.Path.GetType() == typeof(SimpleFlightRouteData)){
                 relativeUri = ServiceUris.AccessSatellitePassesSimpleFlightUri;
             }
-            else if((Type)airspaceRouteData.Path == typeof(GreatArcRouteData)){
+            else if(airspaceRouteData.Path.GetType() == typeof(GreatArcRouteData)){
                 relativeUri = ServiceUris.AccessSatellitePassesGreatArcUri;
             }
             
             if(string.IsNullOrEmpty(relativeUri)){
-                throw new ArgumentOutOfRangeException("airspaceRouteData",(Type)airspaceRouteData.Path, 
-                            (Type)airspaceRouteData.Path  + " is not a valid type for airspace crossings");
+                throw new ArgumentOutOfRangeException("airspaceRouteData",airspaceRouteData.Path.GetType(), 
+                            airspaceRouteData.Path.GetType()  + " is not a valid type for airspace crossings");
             }
             
             var uri = Networking.GetFullUri(relativeUri);
@@ -46,7 +46,7 @@ namespace OneSky.Services.Services.Airspace
         public static async Task<StaticAirspaceAccessResult<AirspaceIdentifier>> 
             GetAirspaceCrossingsForACylinder(StaticAirspacePointFlightData airspacePfData){
 
-            string relativeUri = ServiceUris.AirspacePointFlightUri;            
+            var relativeUri = ServiceUris.AirspacePointFlightUri;            
             airspacePfData.Verify();                     
             var uri = Networking.GetFullUri(relativeUri);            
             return await Networking.HttpPostCall<StaticAirspacePointFlightData, 
