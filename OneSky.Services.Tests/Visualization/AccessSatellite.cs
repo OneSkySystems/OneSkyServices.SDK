@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FluentAssertions;
-using Newtonsoft.Json;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using OneSky.Services.Inputs;
-using OneSky.Services.Inputs.Routing;
 using OneSky.Services.Inputs.Visualization;
 using OneSky.Services.Services.Czml;
-using OneSky.Services.Services.Czml;
+using System;
+
 
 namespace OneSky.Services.Tests.Visualization
 {
@@ -38,9 +34,10 @@ namespace OneSky.Services.Tests.Visualization
             };
             var expectedResult = TestHelper.VisualizationSgp4DocExample;
             var result = CzmlServices.GetSgp4Czml(request).Result;
-            result.Should().Contain(expectedResult, "generated id will be different, so we can only check most of the CZML" );
-            result.Should().Contain("\"color\":{\"rgba\":[0,255,0,255]", "the color green for the orbit");
-
+            result.Should().Contain(expectedResult, "generated id in CZML will be different, so we can only check some of the data" );
+            result.Should().Contain("\"color\":{\"rgba\":[0,255,0,255]", "checking the line color is green for the orbit");
         }
+
+        // Airspace Viz tests needed here
     }
 }
