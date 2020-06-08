@@ -22,13 +22,13 @@ namespace OneSky.Services.Services.Airspace
             airspaceRouteData.Verify();
             
             if(airspaceRouteData.Path.GetType() == typeof(PointToPointRouteData)){
-                relativeUri = ServiceUris.AccessSatellitePassesPointToPointUri;
+                relativeUri = ServiceUris.AirspacePointToPointUri;
             }
             else if(airspaceRouteData.Path.GetType() == typeof(SimpleFlightRouteData)){
-                relativeUri = ServiceUris.AccessSatellitePassesSimpleFlightUri;
+                relativeUri = ServiceUris.AirspaceSimpleFlightUri;
             }
             else if(airspaceRouteData.Path.GetType() == typeof(GreatArcRouteData)){
-                relativeUri = ServiceUris.AccessSatellitePassesGreatArcUri;
+                relativeUri = ServiceUris.AirspaceGreatArcUri;
             }
             
             if(string.IsNullOrEmpty(relativeUri)){
