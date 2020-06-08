@@ -15,8 +15,8 @@ namespace OneSky.Services.Services.Airspace
     /// </summary>
     public class AirspaceServices
     {
-        public static async Task<StaticAirspaceAccessResult<AirspaceCrossingResult<IPathResult>>> 
-            GetAirspaceCrossingsForARoute(StaticAirspaceRouteData<IVerifiable> airspaceRouteData){
+        public static async Task<StaticAirspaceAccessResult<AirspaceCrossingResult<R>>> 
+            GetAirspaceCrossingsForARoute<R>(StaticAirspaceRouteData<IVerifiable> airspaceRouteData){
             var relativeUri = string.Empty;
             
             airspaceRouteData.Verify();
@@ -40,7 +40,7 @@ namespace OneSky.Services.Services.Airspace
             
             return await 
             Networking.HttpPostCall<StaticAirspaceRouteData<IVerifiable>, 
-                            StaticAirspaceAccessResult<AirspaceCrossingResult<IPathResult>>>(uri, airspaceRouteData);
+                            StaticAirspaceAccessResult<AirspaceCrossingResult<R>>>(uri, airspaceRouteData);
         }     
 
         public static async Task<StaticAirspaceAccessResult<AirspaceIdentifier>> 
@@ -59,10 +59,10 @@ namespace OneSky.Services.Services.Airspace
             return await Networking.HttpPostCall<AirspaceSelectionOptions, AirspaceIdResult>(uri, seletionOptions);
         }
 
-        public static async Task<AirspaceIdResult> RealTime(StaticAirspaceRealTimeData realTimeData)  {
+        public static async Task<StaticAirspaceAccessResult<AirspaceIdentifier>> RealTime(StaticAirspaceRealTimeData realTimeData)  {
             realTimeData.Verify();
             var uri = Networking.GetFullUri(ServiceUris.AirspaceRealTimeUri);            
-            return await Networking.HttpPostCall<StaticAirspaceRealTimeData, AirspaceIdResult>(uri, realTimeData);
+            return await Networking.HttpPostCall<StaticAirspaceRealTimeData, StaticAirspaceAccessResult<AirspaceIdentifier>>(uri, realTimeData);
         }
     }
 
