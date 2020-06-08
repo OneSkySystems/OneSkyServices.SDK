@@ -11,29 +11,24 @@ namespace OneSky.Services.Tests.Lighting
     public class LightingDocExamples
     {
         [Test]
-        public void SolarLighting_SiteLightingForThreeDays()
+        public void SolarLightingAtASite()
         {
-            var site = new SiteData
-            {
-                Location = new ServiceCartographic(39.0, -75.77, 0)
-            };
             var solarData = new SolarLightingData<SiteData>
             {
-                Path = site,
-                AnalysisStart = new DateTimeOffset(2018, 4, 9,
-                    0, 0, 0, new TimeSpan(0, 0, 0)),
-                AnalysisStop = new DateTimeOffset(2018, 4, 11, 
-                    0, 0, 0, new TimeSpan(0, 0, 0)),
+                Path = new SiteData
+                {
+                    Location = new ServiceCartographic(39.0, -75.77, 0)
+                },
+                AnalysisStart = new DateTimeOffset(2018, 4, 9,0, 0, 0, TimeSpan.Zero),
+                AnalysisStop = new DateTimeOffset(2018, 4, 11, 0, 0, 0, TimeSpan.Zero),
                 OutputTimeOffset = -4.0f
             };
 
             var lighting = LightingServices.GetLightingAtASite(solarData).Result;
 
             // setup expected dates, then test
-            var firstSunrise = new DateTimeOffset(2018, 4, 9,
-                6, 35, 24, 756, new TimeSpan(-4, 0, 0));
-            var firstAstroPmTwilightStop = new DateTimeOffset(2018, 4, 9,
-                21, 08, 04, 142, new TimeSpan(-4, 0, 0));
+            var firstSunrise = new DateTimeOffset(2018, 4, 9,6, 35, 24, 756, new TimeSpan(-4, 0, 0));
+            var firstAstroPmTwilightStop = new DateTimeOffset(2018, 4, 9,21, 08, 04, 142, new TimeSpan(-4, 0, 0));
             Assert.That(lighting.Lighting.Count == 3);
             Assert.AreEqual(firstSunrise.ToUnixTimeMilliseconds(),
                 lighting.Lighting[0].Sunrise.ToUnixTimeMilliseconds());
@@ -60,12 +55,12 @@ namespace OneSky.Services.Tests.Lighting
             route.Waypoints.Add(new ServiceCartographicWithTime
             {
                 Position = new ServiceCartographic(39.07096,-75.78509,600.0),
-                Time = new DateTimeOffset(2014,03,25,18,30,0,new TimeSpan(0,0,0)).ToString()
+                Time = new DateTimeOffset(2014,03,25,18,30,0,TimeSpan.Zero).ToString()
             });
             route.Waypoints.Add(new ServiceCartographicWithTime
             {
                 Position = new ServiceCartographic(42.06308,-75.7850,620.0),
-                Time = new DateTimeOffset(2014,03,25,23,30,20,new TimeSpan(0,0,0)).ToString()
+                Time = new DateTimeOffset(2014,03,25,23,30,20,TimeSpan.Zero).ToString()
             });
             
             var solarData = new SolarLightingData<PointToPointRouteData>
@@ -77,8 +72,7 @@ namespace OneSky.Services.Tests.Lighting
             var result = LightingServices.GetLightingAlongARoute(solarData).Result;
 
             // setup expected dates, then test
-            var sunset = new DateTimeOffset(2014, 3, 25,
-                19, 20, 03, 664, new TimeSpan(-4, 0, 0));
+            var sunset = new DateTimeOffset(2014, 3, 25,19, 20, 03, 664,new TimeSpan(-4, 0, 0));
             
             Assert.AreEqual(sunset.ToUnixTimeMilliseconds(),result.FlightLightingInfo.Sunset.ToUnixTimeMilliseconds());
             Assert.IsFalse(result.SunriseBetweenStartAndEnd);
@@ -88,7 +82,7 @@ namespace OneSky.Services.Tests.Lighting
         }
 
          [Test]
-        public void SolarAngles_SiteSolarAngles()
+        public void SolarAnglesAtASite()
         {
             var site = new SiteData
             {
@@ -115,12 +109,9 @@ namespace OneSky.Services.Tests.Lighting
             var lastElevation = 5.791008759822339;
             var midAzimuth = 177.80736204126316;
             var midElevation = 58.7187946597877;
-            var firstTime = new DateTimeOffset(2018, 4, 9,
-                11, 0, 0, new TimeSpan(0, 0, 0));
-            var midTime = new DateTimeOffset(2018, 4, 9,
-                17, 0, 0, new TimeSpan(0, 0, 0));
-            var lastTime = new DateTimeOffset(2018, 4, 9,
-                23, 0, 0, new TimeSpan(0, 0, 0));
+            var firstTime = new DateTimeOffset(2018, 4, 9,11, 0, 0, new TimeSpan(0, 0, 0));
+            var midTime = new DateTimeOffset(2018, 4, 9,17, 0, 0, new TimeSpan(0, 0, 0));
+            var lastTime = new DateTimeOffset(2018, 4, 9,23, 0, 0, new TimeSpan(0, 0, 0));
 
             var tol = 1e-6;
             Assert.AreEqual(firstTime,angles[0].Time);
@@ -141,12 +132,12 @@ namespace OneSky.Services.Tests.Lighting
             route.Waypoints.Add(new ServiceCartographicWithTime
             {
                 Position = new ServiceCartographic(39.07096,-75.78509,2000.0),
-                Time = new DateTimeOffset(2014,03,25,18,30,0,new TimeSpan(0,0,0)).ToString()
+                Time = new DateTimeOffset(2014,03,25,18,30,0,TimeSpan.Zero).ToString()
             });
             route.Waypoints.Add(new ServiceCartographicWithTime
             {
                 Position = new ServiceCartographic(39.06308,-75.7850,2010.0),
-                Time = new DateTimeOffset(2014,03,25,18,30,20,new TimeSpan(0,0,0)).ToString()
+                Time = new DateTimeOffset(2014,03,25,18,30,20,TimeSpan.Zero).ToString()
             });
             route.OutputSettings.Step = 5;
             
@@ -166,10 +157,8 @@ namespace OneSky.Services.Tests.Lighting
             var firstElevation = 48.583033190527004;
             var lastElevation = 48.555909311795077;
 
-            var firstTime = new DateTimeOffset(2014, 3, 25,
-                18, 30, 0, new TimeSpan(0, 0, 0));
-            var lastTime = new DateTimeOffset(2014, 3, 25,
-                18, 30, 20, new TimeSpan(0, 0, 0));
+            var firstTime = new DateTimeOffset(2014, 3, 25,18, 30, 0, TimeSpan.Zero);
+            var lastTime = new DateTimeOffset(2014, 3, 25,18, 30, 20, TimeSpan.Zero);
             
             Assert.AreEqual(firstTime,angles[0].Time);
             Assert.AreEqual(firstAzimuth,angles[0].Azimuth);
@@ -177,6 +166,27 @@ namespace OneSky.Services.Tests.Lighting
             Assert.AreEqual(lastTime,angles[4].Time);
             Assert.AreEqual(lastAzimuth,angles[4].Azimuth);
             Assert.AreEqual(lastElevation,angles[4].Elevation);
+        }
+
+         [Test]
+        public void SolarTransitAtASite()
+        {
+            var solarData = new SolarLightingData<SiteData>
+            {
+                Path = new SiteData
+                {
+                    Location = new ServiceCartographic(39.0, -104.77, 0)
+                },
+                AnalysisStart = new DateTimeOffset(2018, 12, 6,0, 0, 0,TimeSpan.Zero),
+                AnalysisStop = new DateTimeOffset(2018, 12, 6, 0, 0, 0, TimeSpan.Zero),
+                OutputTimeOffset = -7.0f
+            };
+
+            var lighting = LightingServices.GetSolarTransit(solarData).Result;
+            var firstResult = lighting[0];
+            Assert.That(firstResult.Time, Is.EqualTo(DateTimeOffset.Parse("2018-12-06T11:50:15.1055198-07:00")));
+            Assert.AreEqual(firstResult.Azimuth,180.0130598395302,TestHelper.PrecisionDouble);
+            Assert.AreEqual(firstResult.Elevation,28.4518546216019,TestHelper.PrecisionDouble);
         }
     }
 }

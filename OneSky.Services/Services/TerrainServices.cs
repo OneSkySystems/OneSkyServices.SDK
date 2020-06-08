@@ -10,7 +10,7 @@ namespace OneSky.Services.Services.Terrain
 {
     /// <summary>
     /// Terrain methods.  See the service documentation for 
-    /// notes on the different Terrain call types: https://saas.agi.com/V1/Documentation/Terrain.
+    /// notes on the different Terrain call types: https://saas.onesky.xyz/V1/Documentation/Terrain.
     /// </summary>
     public class TerrainServices
     {
@@ -19,8 +19,7 @@ namespace OneSky.Services.Services.Terrain
         /// </summary>
         /// <param name="terrainData">Data defining the routes to visualize.</param>
         /// <typeparam name="T">The input route data type. Only PointToPoint and GreatArc routes are allowed.
-        /// or Sgp4Data.</typeparam>
-        /// <returns>A Czml string.</returns>
+        /// <returns>A lost of heights and locations.</returns>
         public static async Task<List<TerrainHeightAtLocationResponse>> 
                                             GetTerrainHeightsAlongARoute<T>(T terrainRouteData) where T: IVerifiable{
 

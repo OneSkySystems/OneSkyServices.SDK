@@ -19,14 +19,8 @@ namespace OneSky.Services.Inputs.Airspace
         /// </summary>
         public double HorizontalProximityThreshold
         {
-            get
-            {
-                return _horizontalProximityThreshold * 1.0 / 1.05;
-            }
-            set
-            {
-                _horizontalProximityThreshold = value * 1.05;
-            } 
+            get => _horizontalProximityThreshold * 1.0 / 1.05;
+            set => _horizontalProximityThreshold = value * 1.05;
             // adding 5 % to account for the fact the GDAL does not return *some* intersected airspaces.
             //TODO Update this when the distance calculation is updated to a better solution
         }

@@ -12,7 +12,7 @@ namespace OneSky.Services.Inputs.Population
         /// <summary>
         /// The location at or along which population results are desired.
         /// </summary>
-        public SiteLocationData Path { get; set; }
+        public SiteData Path { get; set; }
 
         /// <summary>
         /// The radius of the cylinder the point flight is flying in

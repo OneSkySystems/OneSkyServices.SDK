@@ -42,28 +42,7 @@ namespace OneSky.Services.Util
             var response = await _client.PostAsync(address, postContent);
             if (!response.IsSuccessStatusCode)
             {
-                // Get the error data from the service response
-                var errorResponse = response.Content.ReadAsStringAsync().Result;
-                if (!string.IsNullOrEmpty(errorResponse))
-                {
-                    AnalyticalServicesException asEx;
-                    try
-                    {
-                        var errorResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(errorResponse);
-                        asEx = new AnalyticalServicesException(
-                            int.Parse(errorResult["ErrorId"]),
-                            errorResult["Message"],
-                            response.StatusCode)
-                        {
-                            HelpLink = errorResult["HelpUrl"]
-                        };
-                    }
-                    catch
-                    {
-                        asEx = new AnalyticalServicesException(9999,$"Unknown service error response: {errorResponse}");
-                    }
-                    throw asEx;
-                }
+                GetErrorMessageandThrow(response.Content.ReadAsStringAsync().Result, response.StatusCode);
             }
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
@@ -92,7 +71,9 @@ namespace OneSky.Services.Util
         public static async Task<R> HttpGetCall<R>(Uri address){
 
             var response = await _client.GetAsync(address);
-            if (!response.IsSuccessStatusCode) throw new WebException("Error code: " + response.StatusCode);
+            if (!response.IsSuccessStatusCode)
+                GetErrorMessageandThrow(response.Content.ReadAsStringAsync().Result, response.StatusCode);
+
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
             
@@ -109,7 +90,8 @@ namespace OneSky.Services.Util
         public static async Task<string> HttpGetCall(Uri address){
             
             var response = await _client.GetAsync(address);
-            if (!response.IsSuccessStatusCode) throw new WebException("Error code: " + response.StatusCode);
+            if (!response.IsSuccessStatusCode) 
+                GetErrorMessageandThrow(response.Content.ReadAsStringAsync().Result, response.StatusCode);
 
             return await response.Content.ReadAsStringAsync();
         }
@@ -173,6 +155,30 @@ namespace OneSky.Services.Util
                 urib.Query = urib.Query.Substring(1) + prnQuery;
             }                            
             return urib.Uri;
+        }
+
+        internal static void GetErrorMessageandThrow(string errorResponse, HttpStatusCode status)
+        {
+            AnalyticalServicesException asEx = new AnalyticalServicesException(9999, $"Unknown service error response: {errorResponse}"); ;
+            if (!string.IsNullOrEmpty(errorResponse))
+            {
+                try
+                {
+                    var errorResult = JsonConvert.DeserializeObject<Dictionary<string, string>>(errorResponse);
+                    asEx = new AnalyticalServicesException(
+                        int.Parse(errorResult["ErrorId"]),
+                        errorResult["Message"],
+                        status)
+                    {
+                        HelpLink = errorResult["HelpUrl"]
+                    };
+                }
+                catch
+                {
+                    throw asEx;
+                }
+            }
+            throw asEx;
         }
     }
 }

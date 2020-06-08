@@ -29,6 +29,40 @@ namespace OneSky.Services.Tests.Lighting
         }
 
         [Test]
+        public void TestNoRiseNoSetArctic()
+        {
+            var request = new SolarLightingData<SiteData>
+            {
+                // Just above the Arctic circle
+                Path = new SiteData { Location = { Latitude = 68.0, Longitude = 100.0, Altitude = 100 } },
+                AnalysisStart = new DateTime(2020, 6, 22),
+                AnalysisStop = new DateTime(2020, 6, 22),
+            };
+            var lightingResult = LightingServices.GetLightingAtASite(request).Result;
+            Assert.That(lightingResult.Lighting[0].IsRiseDefined,Is.EqualTo(false));
+            Assert.That(lightingResult.Lighting[0].IsSetDefined,Is.EqualTo(false));
+            Assert.That(lightingResult.Lighting[0].ContinuouslyAboveHorizon,Is.EqualTo(true));
+            Assert.That(lightingResult.Lighting[0].ContinuouslyBelowHorizon,Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestNoRiseNoSetAntarctic()
+        {
+            var request = new SolarLightingData<SiteData>
+            {
+                //Just below the Antarctic circle
+                Path = new SiteData { Location = { Latitude = -68.0, Longitude = 100.0, Altitude = 100 } },
+                AnalysisStart = new DateTime(2020, 6, 22),
+                AnalysisStop = new DateTime(2020, 6, 22),
+            };
+            var lightingResult = LightingServices.GetLightingAtASite(request).Result;
+            Assert.That(lightingResult.Lighting[0].IsRiseDefined,Is.EqualTo(false));
+            Assert.That(lightingResult.Lighting[0].IsSetDefined,Is.EqualTo(false));
+            Assert.That(lightingResult.Lighting[0].ContinuouslyAboveHorizon,Is.EqualTo(false));
+            Assert.That(lightingResult.Lighting[0].ContinuouslyBelowHorizon,Is.EqualTo(true));
+        }
+
+        [Test]
         public void TestSolarAngles()
         {
             var request = new SolarLightingData<SiteData>

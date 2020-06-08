@@ -601,7 +601,7 @@ namespace OneSky.Services.Tests.Routing
 
         #region Raster Search
         [Test]
-        [Explicit]
+        [DebugExplicit]
         public void TestRasterSearchRouteMissingStart()
         {
             var request = new RasterRouteData()

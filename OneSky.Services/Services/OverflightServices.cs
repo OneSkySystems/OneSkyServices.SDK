@@ -12,7 +12,7 @@ namespace OneSky.Services.Services.Overflight
 {
     /// <summary>
     /// Overflight service methods.  See the service documentation for 
-    /// notes on the different overflight service types: https://saas.agi.com/V1/Documentation/Overflight.
+    /// notes on the different overflight service types: https://saas.onesky.xyz/V1/Documentation/Overflight.
     /// </summary>
     public class OverflightServices
     {

@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
+using OneSky.Services.Inputs.Routing;
 
-namespace OneSky.Services.Inputs.Routing
+namespace OneSky.Services.Inputs.Visualization
 {
     /// <summary>
     /// A route that defines an orbital path, but also include parameters for visualization in CZML.

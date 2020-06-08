@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using OneSky.Services.Inputs;
 using OneSky.Services.Inputs.Navigation;
-using OneSky.Services.Outputs.Navigation;
 using OneSky.Services.Inputs.Routing;
+using OneSky.Services.Outputs.Navigation;
 using OneSky.Services.Util;
 
-namespace OneSky.Services.Services.Navigation
+namespace OneSky.Services.Services
 {
     /// <summary>
     /// Navigation methods.  See the service documentation for 
-    /// notes on the different navigation services: https://saas.agi.com/V1/Documentation/Navigation.
+    /// notes on the different navigation services: https://saas.onesky.xyz/V1/Documentation/Navigation.
     /// </summary>
     public class NavigationServices
     {
@@ -25,9 +25,8 @@ namespace OneSky.Services.Services.Navigation
             uri = timeOfPaf == null ? uri : Networking.AppendDateToUri(uri,timeOfPaf);
             return await Networking.HttpGetCall(uri);
         }  
-        public static async Task<string> GetSofData(DateTime? timeOfSof = null){
+        public static async Task<string> GetSofData(){
             var uri = Networking.GetFullUri(ServiceUris.NavigationSofDataUri);
-            uri = timeOfSof == null ? uri : Networking.AppendDateToUri(uri,timeOfSof);
             return await Networking.HttpGetCall(uri);
         } 
         public static async Task<string> GetAlmanacData(DateTime? timeOfAlmanac = null){
@@ -44,16 +43,33 @@ namespace OneSky.Services.Services.Navigation
     /// <param name="prn">The prn whose outages are desired.</param>
     /// <remarks>Note that either a from/to time or a prn (or both) must be supplied</remarks>
     /// <returns>A string containing Gps outages.</returns>
-        public static async Task<string> GetGpsOutages(DateTime? fromTime = null, 
-                                                       DateTime? toTime = null,
-                                                       int? prn = null){
+        public static async Task<IEnumerable<ServiceSatelliteOutage>> GetGpsOutages(DateTime? fromTime = null, DateTime? toTime = null, int? prn = null){
             if(fromTime == null && toTime == null && prn == null){
                 throw new ArgumentNullException("fromTime",
                                                 "You must specify either a from and to date or a prn number.");
             }
             var uri = Networking.GetFullUri(ServiceUris.NavigationGpsOutagesUri);
-            return await Networking.HttpGetCall(Networking.AppendDateTimeAndPrnToUri(uri,fromTime,toTime,prn));
-        }       
+            //AS-146 will address why this conversion doesn't work
+            return await Networking.HttpGetCall<List<ServiceSatelliteOutage>>(Networking.AppendDateTimeAndPrnToUri(uri,fromTime,toTime,prn));
+        }
+    /// <summary>
+    /// Returns Gps Outages times for a time interval or a prn, or a prn within a time interval.
+    /// </summary>
+    /// <param name="fromTime">The start time to look for outages.</param>
+    /// <param name="toTime">The end time to look for outages.</param>
+    /// <param name="prn">The prn whose outages are desired.</param>
+    /// <remarks>Note that either a from/to time or a prn (or both) must be supplied. Also, this is a temporary method that should be deprecated when AS-146 is fixed.</remarks>
+    /// <returns>A string containing Gps outages.</returns>
+    public static async Task<string> GetGpsOutagesString(DateTime? fromTime = null, DateTime? toTime = null, int? prn = null)
+    {
+        if (fromTime == null && toTime == null && prn == null)
+        {
+            throw new ArgumentNullException("fromTime",
+                "You must specify either a from and to date or a prn number.");
+        }
+        var uri = Networking.GetFullUri(ServiceUris.NavigationGpsOutagesUri);
+        return await Networking.HttpGetCall(Networking.AppendDateTimeAndPrnToUri(uri, fromTime, toTime, prn));
+    }
 
         /// <summary>
         /// Gets predicted Gps errors along a route
@@ -63,7 +79,7 @@ namespace OneSky.Services.Services.Navigation
         public static async Task<RouteNavigationErrorResults> GetPredictedNavigationErrorsOnARoute(
                                         NavigationPredictionData<IVerifiable> predictionDataForRoute)
         {            
-            string relativeUri = string.Empty;
+            var relativeUri = string.Empty;
             
             predictionDataForRoute.Verify();
 
@@ -96,29 +112,29 @@ namespace OneSky.Services.Services.Navigation
         public static async Task<RouteNavigationErrorResults> GetAssessedNavigationErrorsOnARoute(
                                         NavigationAssessmentData<IVerifiable> assessmentDataForRoute)
         {            
-            string relativeUri = string.Empty;
+            var relativeUri = string.Empty;
             
             assessmentDataForRoute.Verify();
             
-            if((Type)assessmentDataForRoute.Path == typeof(PointToPointRouteData)){
+            if(assessmentDataForRoute.Path.GetType() == typeof(PointToPointRouteData)){
                 relativeUri = ServiceUris.NavigationAssessedPointToPointUri;
             }
-            else if((Type)assessmentDataForRoute.Path == typeof(SimpleFlightRouteData)){
+            else if(assessmentDataForRoute.Path.GetType() == typeof(SimpleFlightRouteData)){
                 relativeUri = ServiceUris.NavigationAssessedSimpleFlightUri;
             }
-            else if((Type)assessmentDataForRoute.Path == typeof(TolRouteData)){
+            else if(assessmentDataForRoute.Path.GetType() == typeof(TolRouteData)){
                 relativeUri = ServiceUris.NavigationAssessedTolUri;
             }
-            else if((Type)assessmentDataForRoute.Path == typeof(RasterRouteData)){
+            else if(assessmentDataForRoute.Path.GetType() == typeof(RasterRouteData)){
                 relativeUri = ServiceUris.NavigationAssessedRasterUri;
             }
-            else if((Type)assessmentDataForRoute.Path == typeof(GreatArcRouteData)){
+            else if(assessmentDataForRoute.Path.GetType() == typeof(GreatArcRouteData)){
                 relativeUri = ServiceUris.NavigationAssessedGreatArcUri;
             }
 
             if(string.IsNullOrEmpty(relativeUri)){
-                throw new ArgumentOutOfRangeException("accessData",(Type)assessmentDataForRoute.Path, 
-                            (Type)assessmentDataForRoute.Path  + " is not a valid type for Navigation paths");
+                throw new ArgumentOutOfRangeException("accessData",assessmentDataForRoute.Path.GetType(), 
+                            assessmentDataForRoute.Path.GetType() + " is not a valid type for Navigation paths");
             }
             
             var uri = Networking.GetFullUri(relativeUri);
@@ -128,29 +144,29 @@ namespace OneSky.Services.Services.Navigation
 
         public static async Task<RouteDopResults> GetDopOnARoute(NavigationData<IVerifiable> dopDataForRoute)
         {            
-            string relativeUri = string.Empty;
+            var relativeUri = string.Empty;
             
             dopDataForRoute.Verify();
             
-            if((Type)dopDataForRoute.Path == typeof(PointToPointRouteData)){
+            if(dopDataForRoute.Path.GetType() == typeof(PointToPointRouteData)){
                 relativeUri = ServiceUris.NavigationDopPointToPointUri;
             }
-            else if((Type)dopDataForRoute.Path == typeof(SimpleFlightRouteData)){
+            else if(dopDataForRoute.Path.GetType() == typeof(SimpleFlightRouteData)){
                 relativeUri = ServiceUris.NavigationDopSimpleFlightUri;
             }
-            else if((Type)dopDataForRoute.Path == typeof(TolRouteData)){
+            else if(dopDataForRoute.Path.GetType() == typeof(TolRouteData)){
                 relativeUri = ServiceUris.NavigationDopTolUri;
             }
-            else if((Type)dopDataForRoute.Path == typeof(RasterRouteData)){
+            else if(dopDataForRoute.Path.GetType() == typeof(RasterRouteData)){
                 relativeUri = ServiceUris.NavigationDopRasterUri;
             }
-            else if((Type)dopDataForRoute.Path == typeof(GreatArcRouteData)){
+            else if(dopDataForRoute.Path.GetType() == typeof(GreatArcRouteData)){
                 relativeUri = ServiceUris.NavigationDopGreatArcUri;
             }
 
             if(string.IsNullOrEmpty(relativeUri)){
-                throw new ArgumentOutOfRangeException("accessData",(Type)dopDataForRoute.Path, 
-                            (Type)dopDataForRoute.Path  + " is not a valid type for Navigation paths");
+                throw new ArgumentOutOfRangeException("accessData",dopDataForRoute.Path.GetType(), 
+                            dopDataForRoute.Path.GetType() + " is not a valid type for Navigation paths");
             }
             
             var uri = Networking.GetFullUri(relativeUri);
@@ -160,17 +176,17 @@ namespace OneSky.Services.Services.Navigation
         public static async Task<SiteNavigationErrorResults> GetPredictedNavigationErrorsAtASite(
                                         NavigationPredictionData<IVerifiable> predictionDataForSite)
         {            
-            string relativeUri = string.Empty;
+            var relativeUri = string.Empty;
             
             predictionDataForSite.Verify();
             
-            if((Type)predictionDataForSite.Path == typeof(SiteData)){
+            if(predictionDataForSite.Path.GetType() == typeof(SiteData)){
                 relativeUri = ServiceUris.NavigationPredictedSiteUri;
             }
             
             if(string.IsNullOrEmpty(relativeUri)){
-                throw new ArgumentOutOfRangeException("predictionDataForSite",(Type)predictionDataForSite.Path, 
-                            (Type)predictionDataForSite.Path  + " is not a valid type for Navigation paths");
+                throw new ArgumentOutOfRangeException("predictionDataForSite",predictionDataForSite.Path.GetType(), 
+                            predictionDataForSite.Path.GetType() + " is not a valid type for Navigation paths");
             }
             
             var uri = Networking.GetFullUri(relativeUri);
@@ -179,40 +195,40 @@ namespace OneSky.Services.Services.Navigation
         } 
 
         public static async Task<SiteNavigationErrorResults> GetAssessedNavigationErrorsAtASite(
-                                        NavigationPredictionData<IVerifiable> assessedDataForSite)
+                                        NavigationAssessmentData<IVerifiable> assessedDataForSite)
         {            
-            string relativeUri = string.Empty;
+            var relativeUri = string.Empty;
             
             assessedDataForSite.Verify();
             
-            if((Type)assessedDataForSite.Path == typeof(SiteData)){
+            if(assessedDataForSite.Path.GetType() == typeof(SiteData)){
                 relativeUri = ServiceUris.NavigationAssessedSiteUri;
             }
             
             if(string.IsNullOrEmpty(relativeUri)){
-                throw new ArgumentOutOfRangeException("assessedDataForSite",(Type)assessedDataForSite.Path, 
-                            (Type)assessedDataForSite.Path  + " is not a valid type for Navigation paths");
+                throw new ArgumentOutOfRangeException("assessedDataForSite",assessedDataForSite.Path.GetType(), 
+                            assessedDataForSite.Path.GetType() + " is not a valid type for Navigation paths");
             }
             
             var uri = Networking.GetFullUri(relativeUri);
-            return await Networking.HttpPostCall<NavigationPredictionData<IVerifiable>,
+            return await Networking.HttpPostCall<NavigationAssessmentData<IVerifiable>,
                                                  SiteNavigationErrorResults>(uri, assessedDataForSite);
         } 
 
         public static async Task<SiteDopResults> GetDopAtASite(
                                         NavigationData<IVerifiable> dopDataForSite)
         {            
-            string relativeUri = string.Empty;
+            var relativeUri = string.Empty;
             
             dopDataForSite.Verify();
             
-            if((Type)dopDataForSite.Path == typeof(SiteData)){
+            if(dopDataForSite.Path.GetType() == typeof(SiteData)){
                 relativeUri = ServiceUris.NavigationDopSiteUri;
             }
             
             if(string.IsNullOrEmpty(relativeUri)){
-                throw new ArgumentOutOfRangeException("dopDataForSite",(Type)dopDataForSite.Path, 
-                            (Type)dopDataForSite.Path  + " is not a valid type for Navigation paths");
+                throw new ArgumentOutOfRangeException("dopDataForSite",dopDataForSite.Path.GetType(), 
+                            dopDataForSite.Path.GetType() + " is not a valid type for Navigation paths");
             }
             
             var uri = Networking.GetFullUri(relativeUri);

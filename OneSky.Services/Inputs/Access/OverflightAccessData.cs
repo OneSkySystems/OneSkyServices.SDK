@@ -12,6 +12,11 @@ namespace OneSky.Services.Inputs.Access
         public List<NamedRegion> Regions { get; set; }
         public List<string> CountryIDs { get; set; }
 
+        public OverflightAccessData()
+        {
+            Regions = new List<NamedRegion>();
+            CountryIDs = new List<string>();
+        }
         #region IVerifiable Members
 
         public void Verify()
