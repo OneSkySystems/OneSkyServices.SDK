@@ -80,7 +80,9 @@ namespace OneSky.Services.Tests.Airspace
             };
 
             var result = AirspaceServices.GetAirspaceCrossingsForARoute<ServiceCartographicWithTime>(request).Result;
-            var expected = JsonConvert.DeserializeObject<StaticAirspaceAccessResult<AirspaceCrossingResult<ServiceCartographicWithTime>>>(TestHelper.AirspaceIntersectionFromARoute);
+            var expected = JsonConvert.DeserializeObject<
+                StaticAirspaceAccessResult<AirspaceCrossingResult<ServiceCartographicWithTime>>>
+                    (TestHelper.AirspaceIntersectionFromARoute);
             result.Should().BeEquivalentTo(expected);
         }
 
