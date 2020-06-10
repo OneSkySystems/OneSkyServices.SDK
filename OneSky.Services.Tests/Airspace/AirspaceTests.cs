@@ -8,7 +8,6 @@ using OneSky.Services.Outputs.Airspace;
 using OneSky.Services.Services.Airspace;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace OneSky.Services.Tests.Airspace
 {
