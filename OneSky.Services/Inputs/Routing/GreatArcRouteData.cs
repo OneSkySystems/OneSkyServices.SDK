@@ -13,6 +13,13 @@ namespace OneSky.Services.Inputs.Routing
         public List<ServiceCartographicWithTime> Waypoints { get; set; }
         public OutputSettings OutputSettings { get; set; }
 
+        public GreatArcRouteData()
+        {
+            OutputSettings = new OutputSettings();
+
+            Waypoints = new List<ServiceCartographicWithTime>();
+        }
+
         public GreatArcRouteData(int numberOfPointsToAdd)
         {
             OutputSettings = new OutputSettings();

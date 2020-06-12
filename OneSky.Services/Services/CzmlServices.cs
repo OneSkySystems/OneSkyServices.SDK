@@ -32,12 +32,15 @@ namespace OneSky.Services.Services.Czml
         /// <summary>
         /// Gets airspace shapes to visualize.
         /// </summary>
-        /// <param name="czmlAirspaceData">Data defining the airspaces to visualize.</param>
+        /// <param name="listOfCzmlAirspaceData">Data defining the airspaces to visualize.</param>
         /// <returns>A string of Czml</returns>
-        public static async Task<AirspaceCzml> GetAirspaceCzml(AirspaceCzmlData czmlAirspaceData){
-            czmlAirspaceData.Verify();                                   
+        public static async Task<AirspaceCzml> GetAirspaceCzml(List<AirspaceCzmlData> listOfczmlAirspaceData){
+            foreach (var czmlAirspaceData in listOfczmlAirspaceData)
+            {
+                czmlAirspaceData.Verify();   
+            }
             var uri = Networking.GetFullUri(ServiceUris.AirspaceCzmlUri);            
-            return await Networking.HttpPostCall<AirspaceCzmlData,AirspaceCzml>(uri, czmlAirspaceData);
+            return await Networking.HttpPostCall<List<AirspaceCzmlData>,AirspaceCzml>(uri, listOfczmlAirspaceData);
         }  
 
        /// <summary>

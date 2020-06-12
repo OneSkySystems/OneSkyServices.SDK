@@ -129,7 +129,12 @@ namespace OneSky.Services.Util
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public static Uri GetFullUri(string relativeUri) => new Uri(BaseUri, relativeUri + "?u=" + ApiKey);
+        public static Uri GetFullUri(string relativeUri, Format format = Format.Json )
+        {
+            if(format == Format.Json)
+                return new Uri(BaseUri, relativeUri + "?u=" + ApiKey);
+            return new Uri(BaseUri, relativeUri + "?u=" + ApiKey + "&f=xml");
+        }
 
         public static Uri AppendDateToUri(Uri existingUri, DateTime? date){
             if(date.HasValue){
