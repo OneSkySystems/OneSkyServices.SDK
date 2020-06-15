@@ -17,13 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OneSky.Services\OneSky.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="OneSky.Services.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OneSky.Services\OneSky.Services.csproj" />
   </ItemGroup>
 
 </Project>

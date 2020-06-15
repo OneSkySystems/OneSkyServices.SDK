@@ -41,6 +41,7 @@ namespace OneSky.Services.Tests.Weather
         }
 
         [Test]
+        [DebugExplicit] // AS-149 will fix a services error when this data is unavailable
         public void TestWeatherAlongARouteWithSingapore()
         {
             var request = new WeatherData<PointToPointRouteData>();
