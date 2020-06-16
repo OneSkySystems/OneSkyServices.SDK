@@ -12,7 +12,7 @@
     <Description>A software development kit that allows .NET usage of the OneSky analytical services.</Description>
     <Copyright>2020 - OneSky</Copyright>
     <RepositoryUrl>https://github.com/OneSkySystems/AnalyticalServices.SDK</RepositoryUrl>
-    <PackageLicenseExpression>GNU General Public License v3.0</PackageLicenseExpression>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
     <PackageTags>OneSky; UTM; STK; Analytical Services; .NET; SDK; Analysis; Analytics; Drones; UAM; UAV</PackageTags>
     <AssemblyVersion>2.0.2.0</AssemblyVersion>
   </PropertyGroup>
