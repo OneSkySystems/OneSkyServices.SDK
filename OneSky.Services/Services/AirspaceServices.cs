@@ -59,10 +59,10 @@ namespace OneSky.Services.Services.Airspace
             return await Networking.HttpPostCall<AirspaceSelectionOptions, AirspaceIdResult>(uri, seletionOptions);
         }
 
-        public static async Task<AirspaceIdResult> RealTime(StaticAirspaceRealTimeData realTimeData)  {
+        public static async Task<StaticAirspaceAccessResult<AirspaceIdentifier>> RealTime(StaticAirspaceRealTimeData realTimeData)  {
             realTimeData.Verify();
             var uri = Networking.GetFullUri(ServiceUris.AirspaceRealTimeUri);            
-            return await Networking.HttpPostCall<StaticAirspaceRealTimeData, AirspaceIdResult>(uri, realTimeData);
+            return await Networking.HttpPostCall<StaticAirspaceRealTimeData, StaticAirspaceAccessResult<AirspaceIdentifier>>(uri, realTimeData);
         }
     }
 
