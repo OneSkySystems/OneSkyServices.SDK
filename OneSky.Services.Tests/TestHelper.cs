@@ -66,8 +66,6 @@
         public const string AirspaceIntersectionFromARouteWithProximity = "";
         public const string AirspacePointFlight500m = "";
         public const string AirspaceRealTimeInclusionWithProximity = "";
-        // Airspace Tests
         
-
     }
 }
