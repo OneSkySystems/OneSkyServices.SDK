@@ -149,7 +149,7 @@ namespace OneSky.Services.Tests.Routing
             };
 
             var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<Sgp4RouteData,ServiceCartesianWithTime>(request));
-            Assert.That(exc.ErrorId, Is.EqualTo(9999)); // AS-141 will change this to a valid value
+            Assert.That(exc.ErrorId, Is.EqualTo(23600));
             Assert.That(exc.HelpLink, !Is.Empty);
             Assert.That(exc.Message, !Is.Empty);
         }
@@ -174,7 +174,7 @@ namespace OneSky.Services.Tests.Routing
             };
 
             var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<Sgp4RouteData,ServiceCartesianWithTime>(request));
-            Assert.That(exc.ErrorId, Is.EqualTo(21800)); // AS-142 will change this to a correct value
+            Assert.That(exc.ErrorId, Is.EqualTo(23600));
             Assert.That(exc.HelpLink, !Is.Empty);
             Assert.That(exc.Message, !Is.Empty);
         }
@@ -520,8 +520,7 @@ namespace OneSky.Services.Tests.Routing
             };
 
             var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<TolRouteData, ServiceCartographicWithTime>(request));
-            //Assert.That(exc.ErrorId, Is.EqualTo(24000)); // AS-144 will fix this error and generate the proper code
-            Assert.That(exc.ErrorId, Is.EqualTo(9999));
+            Assert.That(exc.ErrorId, Is.EqualTo(23600));
             Assert.That(exc.HelpLink, !Is.Empty);
             Assert.That(exc.Message, !Is.Empty);
         }
@@ -601,7 +600,6 @@ namespace OneSky.Services.Tests.Routing
 
         #region Raster Search
         [Test]
-        [DebugExplicit]
         public void TestRasterSearchRouteMissingStart()
         {
             var request = new RasterRouteData()
@@ -625,9 +623,8 @@ namespace OneSky.Services.Tests.Routing
                     }
                 }
             };
-            //AS-145 will have the service throw the right type of error
             var exc = Assert.CatchAsync<AnalyticalServicesException>(() => RouteServices.GetRoute<RasterRouteData, ServiceCartographicWithTime>(request));
-            Assert.That(exc.ErrorId, Is.EqualTo(24000)); 
+            Assert.That(exc.ErrorId, Is.EqualTo(23600)); 
             Assert.That(exc.HelpLink, !Is.Empty);
             Assert.That(exc.Message, !Is.Empty);
         }
