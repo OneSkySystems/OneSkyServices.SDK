@@ -152,10 +152,10 @@ namespace OneSky.Services.Tests.Lighting
             Assert.That(angles.Count == 5);
 
             // Validated against STK Components
-            var firstAzimuth = 211.51272744968563;
-            var lastAzimuth = 211.63258762262419;
-            var firstElevation = 48.583033190527004;
-            var lastElevation = 48.555909311795077;
+            var firstAzimuth = 211.51272744968313;
+            var lastAzimuth = 211.63258762262168;
+            var firstElevation = 48.583033190528802;
+            var lastElevation = 48.55590931179686;
 
             var firstTime = new DateTimeOffset(2014, 3, 25,18, 30, 0, TimeSpan.Zero);
             var lastTime = new DateTimeOffset(2014, 3, 25,18, 30, 20, TimeSpan.Zero);
