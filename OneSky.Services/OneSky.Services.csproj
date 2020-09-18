@@ -16,7 +16,7 @@
     <PackageTags>OneSky; UTM; STK; SDSP; .NET; SDK; Analysis; Analytics; Drones; UAM; UAV; Supplemental Data Service Provider; UAS</PackageTags>
     <AssemblyVersion>2.0.4.0</AssemblyVersion>
     <PackageIcon>OneSkyIcon.png</PackageIcon>
-    <PackageReleaseNotes>Updating the roduction url endpoint for the analytical services to SDSP.</PackageReleaseNotes>
+    <PackageReleaseNotes>Updating the production url endpoint for the analytical services to SDSP.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
