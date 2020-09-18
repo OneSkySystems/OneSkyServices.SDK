@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.0.3</Version>
+    <Version>2.0.4</Version>
     <releaseNotes>Bug fixes</releaseNotes>
     <license>GPL-3.0-only</license>
     <Authors>Ted Driver</Authors>
@@ -13,9 +13,11 @@
     <Copyright>2020 - OneSky</Copyright>
     <RepositoryUrl>https://github.com/OneSkySystems/AnalyticalServices.SDK</RepositoryUrl>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-    <PackageTags>OneSky; UTM; STK; Analytical Services; .NET; SDK; Analysis; Analytics; Drones; UAM; UAV</PackageTags>
-    <AssemblyVersion>2.0.3.0</AssemblyVersion>
+    <PackageTags>OneSky; UTM; STK; SDSP; .NET; SDK; Analysis; Analytics; Drones; UAM; UAV; Supplemental Data Service Provider; UAS</PackageTags>
+    <AssemblyVersion>2.0.4.0</AssemblyVersion>
     <PackageIcon>OneSkyIcon.png</PackageIcon>
+    <PackageReleaseNotes>Updating the production url endpoint for the analytical services to SDSP.</PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
