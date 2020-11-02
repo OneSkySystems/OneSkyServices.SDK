@@ -1,4 +1,4 @@
-# OneSky Analytical Services C# Software Development Kit
+# OneSky SDSP Services C# Software Development Kit
 
 OneSky Systems Inc. (OneSky) hosts a set of web services for performing complex analyses.  
 The services are located here: <https://saas.onesky.xyz/SDSP>
@@ -8,7 +8,7 @@ This project provides a C# SDK for interacting with the services.
 
 ## How to use this SDK
 
-To use this SDK with OneSky's Analytical Services, follow these steps.
+To use this SDK with OneSky's SDSP Services, follow these steps.
 
 1. First contact OneSky <https://onesky.xyz/contact>, to obtain an API key.
 
