@@ -51,6 +51,7 @@ namespace OneSky.Services.Inputs.Communications
         {
             UseTirem = false;
             TiremSettings = new TiremData();
+            InterferenceSources = new List<TransmitterData>();
             OutputUnits = OutputUnit.Decibels;
         }
 
