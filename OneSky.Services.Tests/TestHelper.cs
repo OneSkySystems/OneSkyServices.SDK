@@ -3,6 +3,8 @@
     public static class TestHelper
     {
         public const double PrecisionDouble = 1e-8;
+        public const double TwoMillimeters = 2e-3;
+        public const double OneCentimeter = 1e-2;
         public const int PrecisionStringLengthTime = 25;
         public const int PrecisionDateTimeMs = 1;
 

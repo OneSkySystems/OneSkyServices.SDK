@@ -39,7 +39,7 @@ namespace OneSky.Services.Tests.Routing
             var result = RouteServices.GetRoute<Sgp4RouteData,ServiceCartesianWithTime>(request).Result;
             var expectedResult = JsonConvert.DeserializeObject<List<ServiceCartesianWithTime>>(TestHelper.RoutingSgp4FromTle);
             result.Should().BeEquivalentTo(expectedResult, options => options
-                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.OneCentimeter))
                 .WhenTypeIs<double>()
             );
         }
@@ -124,7 +124,7 @@ namespace OneSky.Services.Tests.Routing
             // Expected result is an ephemeris generated fom the SSC, not the TLE.
             var expectedResult = JsonConvert.DeserializeObject<List<ServiceCartesianWithTime>>(TestHelper.RoutingSgp4FromSsc);
             result.Should().BeEquivalentTo(expectedResult, options => options
-                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.TwoMillimeters))
                 .WhenTypeIs<double>()
             );
         }
