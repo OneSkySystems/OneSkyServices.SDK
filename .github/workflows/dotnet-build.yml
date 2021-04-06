@@ -1,0 +1,29 @@
+name: .NET core 3.1 Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: windows-2019
+    
+    env: 
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+        # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
+    - name: Setup MSBuild.exe
+      uses: microsoft/setup-msbuild@2008f912f56e61277eefaac6d1888b750582aa16
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: BUILD
+      run: msbuild -p:Configuration=Release
+    - name: Test
+      run: dotnet test --no-build --verbosity normal -c Release
