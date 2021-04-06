@@ -11,6 +11,7 @@ jobs:
     
     env: 
       ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      secret_config: ${{ secrets.CONFIG_FILE }}
 
     steps:
     - uses: actions/checkout@v2
@@ -23,6 +24,10 @@ jobs:
       uses: microsoft/setup-msbuild@2008f912f56e61277eefaac6d1888b750582aa16
     - name: Restore dependencies
       run: dotnet restore
+    - name: Add build config file
+      run: echo $env:secret_config >> "OneSky.Services/OneSky.Services.config"
+    - name: Add test config file
+      run: echo $env:secret_config >> "OneSky.Services.Tests/OneSky.Services.config"
     - name: BUILD
       run: msbuild -p:Configuration=Release
     - name: Test
