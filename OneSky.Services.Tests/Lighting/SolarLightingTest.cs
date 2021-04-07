@@ -78,7 +78,9 @@ namespace OneSky.Services.Tests.Lighting
             };
             var lightingResult = LightingServices.GetSolarAnglesAtASite(request).Result;
             var expected = JsonConvert.DeserializeObject<List<SolarAngles>>(TestHelper.LightingBasicAngles);
-            lightingResult.Should().BeEquivalentTo(expected);
+            lightingResult.Should().BeEquivalentTo(expected, options => options
+                 .Using<double>(ctx => ctx.Subject.Should().BeApproximately(ctx.Expectation, TestHelper.PrecisionDouble))
+                 .WhenTypeIs<double>());
         }
     }
 }
