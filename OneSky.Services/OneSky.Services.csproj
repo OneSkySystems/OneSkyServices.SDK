@@ -3,20 +3,20 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.0.4</Version>
+    <Version>21.1.0</Version>
     <releaseNotes>Bug fixes</releaseNotes>
     <license>GPL-3.0-only</license>
     <Authors>Ted Driver</Authors>
     <Company>OneSky Systems Inc.</Company>
     <Product>OneSky.Services .NET SDK</Product>
     <Description>A software development kit that allows .NET usage of the OneSky analytical services.</Description>
-    <Copyright>2020 - OneSky</Copyright>
+    <Copyright>2021 - OneSky</Copyright>
     <RepositoryUrl>https://github.com/OneSkySystems/AnalyticalServices.SDK</RepositoryUrl>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
     <PackageTags>OneSky; UTM; STK; SDSP; .NET; SDK; Analysis; Analytics; Drones; UAM; UAV; Supplemental Data Service Provider; UAS</PackageTags>
-    <AssemblyVersion>2.0.4.0</AssemblyVersion>
+    <AssemblyVersion>21.1.0.0</AssemblyVersion>
     <PackageIcon>OneSkyIcon.png</PackageIcon>
-    <PackageReleaseNotes>Updating the production url endpoint for the analytical services to SDSP.</PackageReleaseNotes>
+    <PackageReleaseNotes>Changing the version number to a year.release.maintenance scheme to match the code release version.  Previous version is 2.0.4. This release: Updating tests and minor bug fixes.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 

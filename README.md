@@ -1,4 +1,4 @@
-[![.NET core 3.1 Build](https://github.com/OneSkySystems/OneSkyServices.SDK/actions/workflows/dotnet-build.yml/badge.svg?branch=main)](https://github.com/OneSkySystems/OneSkyServices.SDK/actions/workflows/dotnet-build.yml)
+[![.NET core 3.1 Build](https://github.com/OneSkySystems/OneSkyServices.SDK/actions/workflows/dotnet-build.yml/badge.svg)](https://github.com/OneSkySystems/OneSkyServices.SDK/actions/workflows/dotnet-build.yml)
 # OneSky SDSP Services C# Software Development Kit
 
 OneSky Systems Inc. (OneSky) hosts a set of web services for performing complex analyses.  
