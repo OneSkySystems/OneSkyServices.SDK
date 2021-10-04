@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>21.1.0</Version>
+    <Version>21.2.0</Version>
     <releaseNotes>Bug fixes</releaseNotes>
     <license>GPL-3.0-only</license>
     <Authors>Ted Driver</Authors>
@@ -11,12 +11,12 @@
     <Product>OneSky.Services .NET SDK</Product>
     <Description>A software development kit that allows .NET usage of the OneSky analytical services.</Description>
     <Copyright>2021 - OneSky</Copyright>
-    <RepositoryUrl>https://github.com/OneSkySystems/AnalyticalServices.SDK</RepositoryUrl>
+    <RepositoryUrl>https://github.com/OneSkySystems/OneSkyServices.SDK</RepositoryUrl>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
     <PackageTags>OneSky; UTM; STK; SDSP; .NET; SDK; Analysis; Analytics; Drones; UAM; UAV; Supplemental Data Service Provider; UAS</PackageTags>
-    <AssemblyVersion>21.1.0.0</AssemblyVersion>
+    <AssemblyVersion>21.2.0.0</AssemblyVersion>
     <PackageIcon>OneSkyIcon.png</PackageIcon>
-    <PackageReleaseNotes>Changing the version number to a year.release.maintenance scheme to match the code release version.  Previous version is 2.0.4. This release: Updating tests and minor bug fixes.</PackageReleaseNotes>
+    <PackageReleaseNotes>Removing the DarkSky weather provider. Support for their weather service ends this year.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
