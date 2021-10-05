@@ -14,14 +14,14 @@ namespace OneSky.Services.Tests.Weather
         {
             var request = new WeatherData<SiteData>
             {
-                Path = new SiteData {Location = {Latitude = 39.0, Longitude = -104.77, Altitude = 1910}},
+                Path = new SiteData { Location = { Latitude = 39.0, Longitude = -104.77, Altitude = 1910 } },
                 AnalysisStart = DateTime.Now.AddDays(-2),
-                AnalysisStop = DateTime.Now.AddDays(-2).AddHours(2.5)
+                AnalysisStop = DateTime.Now.AddDays(-2).AddHours(3.0)
             };
 
             var weather = WeatherServices.GetWeatherAtASite(request).Result;
             Assert.That(weather != null);
-            Assert.That(weather.Count == 6);           
+            Assert.That(weather.Count == 3);
         }
 
         [Test]
@@ -29,7 +29,7 @@ namespace OneSky.Services.Tests.Weather
         {
             var request = new WeatherData<PointToPointRouteData>();
             var route = new PointToPointRouteData(2);
-            
+
             route.Waypoints[0].Position = new ServiceCartographic
             {
                 Altitude = 2000,
@@ -46,9 +46,9 @@ namespace OneSky.Services.Tests.Weather
             route.Waypoints[1].Time = DateTimeOffset.Now.AddDays(-2).AddHours(2.5).ToString();
             route.OutputSettings.Step = 900;
             route.IncludeWaypointsInRoute = false;
-            
+
             request.Path = route;
-            
+
             var weather = WeatherServices.GetWeatherAlongARoute(request).Result;
             Assert.That(weather != null);
             // should be 6 Wx reports,  one for each half hour along the route.
