@@ -1,78 +1,84 @@
 namespace OneSky.Services.Util{
     public class ServiceUris{
-// Routing Services
-        public const string PointToPointRouteUri = "/SDSP/vehiclePath/pointToPoint";
-        public const string Sgp4RouteUri = "/SDSP/vehiclePath/sgp4";
-        public const string SimpleFlightRouteUri = "/SDSP/vehiclePath/simpleFlight";
-        public const string GreatArcRouteUri = "/SDSP/vehiclePath/greatArc";
-        public const string TolRouteUri = "/SDSP/vehiclePath/tol";
-        public const string RasterRouteUri = "/SDSP/vehiclePath/raster";
+
+        //const string baseRoute = string.Empty; // for localhost - change config file too
+        //const string baseRoute = "/V1Staging"; // for SDSP staging
+        //const string baseRoute = "/V1"; // for SDSP V1
+        const string baseRoute = "/SDSP"; // for SDSP
+
+        // Routing Services
+        public const string PointToPointRouteUri = baseRoute + "/vehiclePath/pointToPoint";
+        public const string Sgp4RouteUri = baseRoute + "/vehiclePath/sgp4";
+        public const string SimpleFlightRouteUri = baseRoute + "/vehiclePath/simpleFlight";
+        public const string GreatArcRouteUri = baseRoute + "/vehiclePath/greatArc";
+        public const string TolRouteUri = baseRoute + "/vehiclePath/tol";
+        public const string RasterRouteUri = baseRoute + "/vehiclePath/raster";
 //Satellite Pass Services
-        public const string AccessSatellitePassesSiteUri = "/SDSP/access/satellitePasses/site";
-        public const string AccessSatellitePassesSgp4Uri = "/SDSP/access/satellitePasses/sgp4";
-        public const string AccessSatellitePassesPointToPointUri = "/SDSP/access/satellitePasses/pointToPoint";
-        public const string AccessSatellitePassesRasterUri = "/SDSP/access/satellitePasses/raster";
-        public const string AccessSatellitePassesTolUri = "/SDSP/access/satellitePasses/tol";
-        public const string AccessSatellitePassesSimpleFlightUri = "/SDSP/access/satellitePasses/simpleFlight";
-        public const string AccessSatellitePassesGreatArcUri = "/SDSP/access/satellitePasses/greatArc";
+        public const string AccessSatellitePassesSiteUri = baseRoute + "/access/satellitePasses/site";
+        public const string AccessSatellitePassesSgp4Uri = baseRoute + "/access/satellitePasses/sgp4";
+        public const string AccessSatellitePassesPointToPointUri = baseRoute + "/access/satellitePasses/pointToPoint";
+        public const string AccessSatellitePassesRasterUri = baseRoute + "/access/satellitePasses/raster";
+        public const string AccessSatellitePassesTolUri = baseRoute + "/access/satellitePasses/tol";
+        public const string AccessSatellitePassesSimpleFlightUri = baseRoute + "/access/satellitePasses/simpleFlight";
+        public const string AccessSatellitePassesGreatArcUri = baseRoute + "/access/satellitePasses/greatArc";
 // Communication Services
-        public const string CommunicationsLinkBudgetUri = "/SDSP/communications/linkbudget";
+        public const string CommunicationsLinkBudgetUri = baseRoute + "/communications/linkbudget";
 // Navigation Services
-        public const string NavigationGpsOutagesUri = "/SDSP/navigation/gpsSatelliteOutages";
-        public const string NavigationPafDataUri = "/SDSP/navigation/PAFData";
-        public const string NavigationPsfDataUri = "/SDSP/navigation/PSFData";
-        public const string NavigationSofDataUri = "/SDSP/navigation/SOFData";
-        public const string NavigationAlmanacDataUri = "/SDSP/navigation/AlmanacData";
-        public const string NavigationPredictedSiteUri = "/SDSP/navigation/predicted/site";
-        public const string NavigationPredictedPointToPointUri = "/SDSP/navigation/predicted/pointToPoint";
-        public const string NavigationPredictedTolUri = "/SDSP/navigation/predicted/tol";
-        public const string NavigationPredictedRasterUri = "/SDSP/navigation/predicted/raster";
-        public const string NavigationPredictedGreatArcUri = "/SDSP/navigation/predicted/greatArc";
-        public const string NavigationPredictedSimpleFlightUri = "/SDSP/navigation/predicted/simpleFlight";
-        public const string NavigationAssessedSiteUri = "/SDSP/navigation/assessed/site";
-        public const string NavigationAssessedPointToPointUri = "/SDSP/navigation/assessed/pointToPoint";
-        public const string NavigationAssessedTolUri = "/SDSP/navigation/assessed/tol";
-        public const string NavigationAssessedRasterUri = "/SDSP/navigation/assessed/raster";
-        public const string NavigationAssessedGreatArcUri = "/SDSP/navigation/assessed/greatArc";
-        public const string NavigationAssessedSimpleFlightUri = "/SDSP/navigation/assessed/simpleFlight";
-        public const string NavigationDopSiteUri = "/SDSP/navigation/dop/site";
-        public const string NavigationDopPointToPointUri = "/SDSP/navigation/dop/pointToPoint";
-        public const string NavigationDopTolUri = "/SDSP/navigation/dop/tol";
-        public const string NavigationDopRasterUri = "/SDSP/navigation/dop/raster";
-        public const string NavigationDopGreatArcUri = "/SDSP/navigation/dop/greatArc";
-        public const string NavigationDopSimpleFlightUri = "/SDSP/navigation/dop/simpleFlight";
+        public const string NavigationGpsOutagesUri = baseRoute + "/navigation/gpsSatelliteOutages";
+        public const string NavigationPafDataUri = baseRoute + "/navigation/PAFData";
+        public const string NavigationPsfDataUri = baseRoute + "/navigation/PSFData";
+        public const string NavigationSofDataUri = baseRoute + "/navigation/SOFData";
+        public const string NavigationAlmanacDataUri = baseRoute + "/navigation/AlmanacData";
+        public const string NavigationPredictedSiteUri = baseRoute + "/navigation/predicted/site";
+        public const string NavigationPredictedPointToPointUri = baseRoute + "/navigation/predicted/pointToPoint";
+        public const string NavigationPredictedTolUri = baseRoute + "/navigation/predicted/tol";
+        public const string NavigationPredictedRasterUri = baseRoute + "/navigation/predicted/raster";
+        public const string NavigationPredictedGreatArcUri = baseRoute + "/navigation/predicted/greatArc";
+        public const string NavigationPredictedSimpleFlightUri = baseRoute + "/navigation/predicted/simpleFlight";
+        public const string NavigationAssessedSiteUri = baseRoute + "/navigation/assessed/site";
+        public const string NavigationAssessedPointToPointUri = baseRoute + "/navigation/assessed/pointToPoint";
+        public const string NavigationAssessedTolUri = baseRoute + "/navigation/assessed/tol";
+        public const string NavigationAssessedRasterUri = baseRoute + "/navigation/assessed/raster";
+        public const string NavigationAssessedGreatArcUri = baseRoute + "/navigation/assessed/greatArc";
+        public const string NavigationAssessedSimpleFlightUri = baseRoute + "/navigation/assessed/simpleFlight";
+        public const string NavigationDopSiteUri = baseRoute + "/navigation/dop/site";
+        public const string NavigationDopPointToPointUri = baseRoute + "/navigation/dop/pointToPoint";
+        public const string NavigationDopTolUri = baseRoute + "/navigation/dop/tol";
+        public const string NavigationDopRasterUri = baseRoute + "/navigation/dop/raster";
+        public const string NavigationDopGreatArcUri = baseRoute + "/navigation/dop/greatArc";
+        public const string NavigationDopSimpleFlightUri = baseRoute + "/navigation/dop/simpleFlight";
 // Ovrflight Services
-        public const string OverflightSgp4Uri = "/SDSP/overflight/sgp4";
-        public const string OverflightSimpleFlightUri = "/SDSP/overflight/simpleFlight";
-        public const string OverflightPointToPointUri = "/SDSP/overflight/pointToPoint";
-        public const string OverflightGreatArcUri = "/SDSP/overflight/greatArc";
+        public const string OverflightSgp4Uri = baseRoute + "/overflight/sgp4";
+        public const string OverflightSimpleFlightUri = baseRoute + "/overflight/simpleFlight";
+        public const string OverflightPointToPointUri = baseRoute + "/overflight/pointToPoint";
+        public const string OverflightGreatArcUri = baseRoute + "/overflight/greatArc";
 // Airspace Services
-        public const string AirspaceSimpleFlightUri = "/SDSP/airspace/simpleFlight";
-        public const string AirspacePointToPointUri = "/SDSP/airspace/pointToPoint";
-        public const string AirspaceGreatArcUri = "/SDSP/airspace/greatArc";
-        public const string AirspacePointFlightUri = "/SDSP/airspace/pointFlight";
-        public const string AirspaceSelectAirspacesUri = "/SDSP/airspace/selectAirspaces";
-        public const string AirspaceRealTimeUri = "/SDSP/airspace/realtime";
+        public const string AirspaceSimpleFlightUri = baseRoute + "/airspace/simpleFlight";
+        public const string AirspacePointToPointUri = baseRoute + "/airspace/pointToPoint";
+        public const string AirspaceGreatArcUri = baseRoute + "/airspace/greatArc";
+        public const string AirspacePointFlightUri = baseRoute + "/airspace/pointFlight";
+        public const string AirspaceSelectAirspacesUri = baseRoute + "/airspace/selectAirspaces";
+        public const string AirspaceRealTimeUri = baseRoute + "/airspace/realtime";
 // CZML visualization
-        public const string VehiclePathCzmlSgp4Uri = "/SDSP/vehiclepath/czml/sgp4";
-        public const string VehiclePathCzmlGpsUri = "/SDSP/vehiclepath/czml/Gps";
-        public const string AirspaceCzmlUri = "/SDSP/airspace/czml";
+        public const string VehiclePathCzmlSgp4Uri = baseRoute + "/vehiclepath/czml/sgp4";
+        public const string VehiclePathCzmlGpsUri = baseRoute + "/vehiclepath/czml/Gps";
+        public const string AirspaceCzmlUri = baseRoute + "/airspace/czml";
 // Terrain Services
-        public const string TerrainHeightsSiteUri = "/SDSP/terrain/heights";
-        public const string TerrainHeightsPointToPointUri = "/SDSP/terrain/pointToPoint";    
-        public const string TerrainHeightsGreatArcUri = "/SDSP/terrain/greatArc";
+        public const string TerrainHeightsSiteUri = baseRoute + "/terrain/heights";
+        public const string TerrainHeightsPointToPointUri = baseRoute + "/terrain/pointToPoint";    
+        public const string TerrainHeightsGreatArcUri = baseRoute + "/terrain/greatArc";
 // Lighting Services
-        public const string LightingSiteUri = "/SDSP/lighting/site";
-        public const string LightingPointToPointUri = "/SDSP/lighting/pointToPoint";
-        public const string LightingAnglesSiteUri = "/SDSP/lighting/angles/site";
-        public const string LightingAnglesPointToPointUri = "/SDSP/lighting/angles/pointToPoint";
-        public const string LightingSolarTransitSiteUri = "/SDSP/lighting/transit/site";
+        public const string LightingSiteUri = baseRoute + "/lighting/site";
+        public const string LightingPointToPointUri = baseRoute + "/lighting/pointToPoint";
+        public const string LightingAnglesSiteUri = baseRoute + "/lighting/angles/site";
+        public const string LightingAnglesPointToPointUri = baseRoute + "/lighting/angles/pointToPoint";
+        public const string LightingSolarTransitSiteUri = baseRoute + "/lighting/transit/site";
 // Population Services
-        public const string PopulationPointToPointUri = "/SDSP/population/pointToPoint";
-        public const string PopulationSiteUri = "/SDSP/population/site";
+        public const string PopulationPointToPointUri = baseRoute + "/population/pointToPoint";
+        public const string PopulationSiteUri = baseRoute + "/population/site";
 // Weather Services
-        public const string WeatherPointToPointUri = "/SDSP/weather/pointToPoint";
-        public const string WeatherSiteUri = "/SDSP/weather/site";
+        public const string WeatherPointToPointUri = baseRoute + "/weather/pointToPoint";
+        public const string WeatherSiteUri = baseRoute + "/weather/site";
 
     }
 }
