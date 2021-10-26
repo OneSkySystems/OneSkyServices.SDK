@@ -1,10 +1,7 @@
 namespace OneSky.Services.Util{
     public class ServiceUris{
 
-        //const string baseRoute = string.Empty; // for localhost - change config file too
-        //const string baseRoute = "/V1Staging"; // for SDSP staging
-        //const string baseRoute = "/V1"; // for SDSP V1
-        const string baseRoute = "/SDSP"; // for SDSP
+        const string baseRoute = "/SDSP";
 
         // Routing Services
         public const string PointToPointRouteUri = baseRoute + "/vehiclePath/pointToPoint";
