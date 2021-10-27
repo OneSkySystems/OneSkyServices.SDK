@@ -21,7 +21,7 @@ namespace OneSky.Services.Tests.Weather
 
             var weather = WeatherServices.GetWeatherAtASite(request).Result;
             Assert.That(weather != null);
-            Assert.That(weather.Count == 3);
+            Assert.GreaterOrEqual(weather.Count,1);
         }
 
         [Test]
@@ -53,6 +53,6 @@ namespace OneSky.Services.Tests.Weather
             Assert.That(weather != null);
             // should be 6 Wx reports,  one for each half hour along the route.
             Assert.That(weather.Count == 6);
-        }
+        }    
     }
 }
