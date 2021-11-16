@@ -28,7 +28,7 @@ namespace OneSky.Services.Inputs.Weather
 
         public WeatherData()
         {
-            Provider = WeatherProviderType.AviationDotGov;
+            Provider = WeatherProviderType.DarkSky;
         }
 
         public void Verify()
