@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>21.2.0</Version>
+    <Version>21.3.0</Version>
     <releaseNotes>Bug fixes</releaseNotes>
     <license>GPL-3.0-only</license>
     <Authors>Ted Driver</Authors>
@@ -14,9 +14,9 @@
     <RepositoryUrl>https://github.com/OneSkySystems/OneSkyServices.SDK</RepositoryUrl>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
     <PackageTags>OneSky; UTM; STK; SDSP; .NET; SDK; Analysis; Analytics; Drones; UAM; UAV; Supplemental Data Service Provider; UAS</PackageTags>
-    <AssemblyVersion>21.2.0.0</AssemblyVersion>
+    <AssemblyVersion>21.3.0.0</AssemblyVersion>
     <PackageIcon>OneSkyIcon.png</PackageIcon>
-    <PackageReleaseNotes>Removing the DarkSky weather provider. Support for their weather service ends this year.</PackageReleaseNotes>
+    <PackageReleaseNotes>Re-adding the DarkSky weather provider. Support for their weather service ends at the end of 2022.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
