@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="OneSky.Services.config" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.10.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
     <PackageReference Include="NUnit" Version="3.11.0" />
@@ -17,13 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="OneSky.Services.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\OneSky.Services\OneSky.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OneSky.Services\OneSky.Services.csproj" />
+    <None Update="OneSky.Services.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
